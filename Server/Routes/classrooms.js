@@ -33,7 +33,7 @@ router.get('/classroom/:id', function (req, res) {
 // return all users in that classroom
 router.get('/classroom/:id/users', function (req, res) {
 	var id = req.params.id;
-	db.query('SELECT USERS.username, USERS.full_name FROM CLASS-USERS-JOIN INNER JOIN USERS ON CLASS-USERS-JOIN.user_id = USERS.id WHERE CLASS-USERS-JOIN.classroom_id = ?;', 
+	db.query('SELECT USERS.username, USERS.full_name FROM CLASSUSERS INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE CLASSUSERS.classroom_id = ?;', 
 		[id], 
 		function (err, rows) {
 		if(err) {
@@ -46,7 +46,7 @@ router.get('/classroom/:id/users', function (req, res) {
 })
 
 // return all notes in that classrooom
-router.get('/classroom/:id/notes', function (req, res) {
+router.get('classroom/:id/notes', function (req, res) {
 	var id = req.params.id;
 	db.query('SELECT `attachment`, `createdAt`, `user_id` FROM NOTES WHERE `classroom_id` = ?;', 
 		[id], 
@@ -59,10 +59,6 @@ router.get('/classroom/:id/notes', function (req, res) {
 		}
 	})
 })
-
-// POST
-// classrooms/:id/users --> adds user in that classroom
-// classrooms/ --> create a classroom
 
 // create a classroom
 router.post('/', function (req, res) {
@@ -80,11 +76,11 @@ router.post('/', function (req, res) {
 })
 
 // adds user to a classroom
-router.post('/classroom/:id/users', function (req, res) {
+router.post('/classroom/adduser', function (req, res) {
 	var classroom = req.body.classroom.id;
 	var user = req.body.user.id;
-	db.query('INSERT INTO CLASS-USERS-JOIN SET `classroom_id` = ?, `user_id` = ?;', 
-		[classname], 
+	db.query('INSERT INTO CLASSUSERS SET `classroom_id` = ?, `user_id` = ?;', 
+		[classroom, user], 
 		function (err, rows) {
 			if(err) {
 				console.error(err)
