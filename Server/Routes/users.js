@@ -26,7 +26,7 @@ router.get('/user/:id', function (req, res) {
 
 router.get('/user/:id/classrooms', function (req, res) {
 	var id = req.params.id;
-	db.query('SELECT `classroom_id` FROM CLASSUSERS WHERE `user_id` = ?;',
+	db.query('SELECT `classroom_id`, `name` FROM CLASSUSERS WHERE `user_id` = ?;',
 	 [id],
 	 function (err, rows) {
 		if (err) {
