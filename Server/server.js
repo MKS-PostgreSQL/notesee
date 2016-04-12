@@ -20,6 +20,7 @@ app.use(morgan('dev'));
 app.use('/api/users/', users)
 app.use('/api/landing/', landing)
 app.use('/api/classrooms/', classrooms)
+app.use('/api/classrooms/notes/', notes)
 
 
 var port = process.env.PORT || 8080

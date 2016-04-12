@@ -2,11 +2,9 @@ var express = require('express')
 var router = express.Router()
 var db = require('../db.js')
 
-
-router.post('/classroom/:id/notes', function(req, res) {
-	var id = req.params.id;
-	var note = req.body.attachment;
-	db.query('INSERT INTO `NOTES` SET `note` = ?;'
+router.post('/', function(req, res) {
+	var note = req.body.note.attachment;
+	db.query('INSERT INTO NOTES SET `attachment` = ?;'
 		[note],
 		function(err, rows) {
 			if(err) {
@@ -20,6 +18,33 @@ router.post('/classroom/:id/notes', function(req, res) {
 
 module.exports = router
 
+// example post 
+// api.post('/groups', util.checkToken, function(req, res){
+//   var name = req.body.group_name;
+//   if(name !== null){
+//     db.query('INSERT INTO GROUPS SET `name` = ?, `owner` = ?;',
+//     [name, req.user.id],
+//     function(err, result){
+//       if(err){
+//         console.error(err);
+//         res.sendStatus(500);
+//       } else {
+//         db.query('INSERT INTO MEMBERSHIPS SET `group` = ?, `user` = ?;',
+//         [result.insertId, req.user.id], function(err, result){
+//           if(err){
+//             console.error(err);
+//             // res.sendStatus(500);
+//           } else {
+//             console.log(result);
+//           }
+//         })
+//         res.sendStatus(201);
+//       }
+//     });
+//   } else {
+//     res.sendStatus(400);
+//   }
+// });
 
 // router.post('/classroom/:id/notes', function (req, res) {
 // 	var id = req.params.id;
