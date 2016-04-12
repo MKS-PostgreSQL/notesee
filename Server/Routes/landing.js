@@ -6,8 +6,11 @@ var db = require('../db.js')
 router.post('/register', function (req, res) {
 	var username = req.body.user.username
 	var password = req.body.user.password
-	db.query('INSERT INTO USERS SET `username` = ?, `password` = ?;',
-		[username, password],
+	var email = req.body.user.email
+	var fullname = req.body.user.name
+	console.log(req.body)
+	db.query('INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `full_name` = ?;',
+		[username, password, email, fullname],
 		function (err, rows) {
 			if (err) {
 				console.error(err)
