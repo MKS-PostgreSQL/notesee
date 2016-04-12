@@ -11,7 +11,7 @@ var db = require('../db.js')
 // grab user information by specifying username
 // ex. /users/user/danny => grab all user information for Danny from users table
 router.get('/user/:id', function (req, res) {
-	var id = req.params.id;
+	var id = req.params.id
 	db.query('SELECT `full_name`, `username`, `createdAt` FROM USERS WHERE `id` = ?;',
 	 [id], 
 	 function (err, rows) {
@@ -37,5 +37,7 @@ router.get('/user/:id/classrooms', function (req, res) {
 		}
 	})
 })
+
+
 
 module.exports = router
