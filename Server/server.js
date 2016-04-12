@@ -9,6 +9,7 @@ var db = require('./db.js')
 var users = require('./Routes/users')
 var landing = require('./Routes/landing')
 var classrooms = require('./Routes/classrooms')
+var notes = require('./Routes/notes')
 
 app.use(cors())
 app.use(bodyParser.urlencoded({extended: true}))
