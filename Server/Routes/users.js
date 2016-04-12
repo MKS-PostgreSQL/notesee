@@ -12,7 +12,7 @@ var db = require('../db.js')
 // ex. /users/user/danny => grab all user information for Danny from users table
 router.get('/user/:id', function (req, res) {
 	var id = req.params.id;
-	db.query('SELECT `full_name`, `username`, `createdAt` FROM `USERS` WHERE `id` = ?;',
+	db.query('SELECT `full_name`, `username`, `createdAt` FROM USERS WHERE `id` = ?;',
 	 [id], 
 	 function (err, rows) {
 		if (err) {
@@ -26,7 +26,7 @@ router.get('/user/:id', function (req, res) {
 
 router.get('/user/:id/classrooms', function (req, res) {
 	var id = req.params.id;
-	db.query('SELECT `classroom_id` FROM `CLASS-USERS-JOIN` WHERE `user_id` = ?;',
+	db.query('SELECT `classroom_id` FROM CLASSUSERS WHERE `user_id` = ?;',
 	 [id],
 	 function (err, rows) {
 		if (err) {
