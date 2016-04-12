@@ -46,7 +46,7 @@ router.get('/classroom/:id/users', function (req, res) {
 })
 
 // return all notes in that classrooom
-router.get('classroom/:id/notes', function (req, res) {
+router.get('/classroom/:id/notes', function (req, res) {
 	var id = req.params.id;
 	db.query('SELECT `attachment`, `createdAt`, `user_id` FROM NOTES WHERE `classroom_id` = ?;', 
 		[id], 
