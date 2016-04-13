@@ -8,11 +8,18 @@
   function ClassroomsController ($cordovaSocialSharing, $ionicModal, $scope, $state, Rooms) {
     var vm = this
 
-    vm.rooms = Rooms
-
+    vm.start = start
     vm.create = create
     vm.leave = leave
     vm.view = view
+
+    function start () {
+      Rooms.getClassrooms(userId).then(function (response) {
+        vm.rooms = response.data;
+      }, function (err) {
+        console.log(err);
+      })
+    }
 
     function create () {
       var roomName = window.prompt('What would you like to name your classroom?')

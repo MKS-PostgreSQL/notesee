@@ -7,7 +7,7 @@
   </ion-nav-buttons>
 
   <!-- Content Wrapper -->
-  <ion-content>
+  <ion-content ng-init=classrooms.start()>
     <ion-list>
       <ion-item ng-repeat="room in classrooms.rooms" ng-click="classrooms.view()">
         {{room.name}}
