@@ -4,7 +4,7 @@ var db = require('../db.js')
 
 // return ALL classrooms
 router.get('/', function (req, res) {
-	db.query('SELECT `name`, `createdAt` FROM CLASSROOMS', 
+	db.query('SELECT `className`, `createdAt` FROM CLASSROOMS;', 
 		function (err, rows) {
 		if(err) {
 			console.error(err)
@@ -15,11 +15,11 @@ router.get('/', function (req, res) {
 	})
 })
 
-// return classroom information based on id
-router.get('/classroom/:id', function (req, res) {
-	var id = req.params.id
-	db.query('SELECT `name`, `createdAt` FROM CLASSROOMS WHERE `id` = ?;', 
-		[id], 
+// return classroom information based on classroom name
+router.get('/classroom/:className', function (req, res) {
+	var name = req.params.className
+	db.query('SELECT `className`, `createdAt` FROM CLASSROOMS WHERE `className` = ?;', 
+		[name], 
 		function (err, rows) {
 		if(err) {
 			console.error(err)
@@ -30,11 +30,11 @@ router.get('/classroom/:id', function (req, res) {
 	})
 })
 
-// return all users in that classroom
-router.get('/classroom/:id/users', function (req, res) {
-	var id = req.params.id
-	db.query('SELECT USERS.username, USERS.full_name FROM CLASSUSERS INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE CLASSUSERS.classroom_id = ?;', 
-		[id], 
+// return all users in that classroom based on classroom name
+router.get('/classroom/:className/users', function (req, res) {
+	var name = req.params.className
+	db.query('SELECT USERS.username, USERS.full_name FROM USERS INNER JOIN CLASSUSERS ON USERS.id = CLASSUSERS.user_id INNER JOIN CLASSROOMS ON CLASSUSERS.classroom_id = CLASSROOMS.id WHERE CLASSROOMS.className = ?;', 
+		[name], 
 		function (err, rows) {
 		if(err) {
 			console.error(err)
@@ -45,11 +45,11 @@ router.get('/classroom/:id/users', function (req, res) {
 	})
 })
 
-// return all notes in that classrooom
-router.get('/classroom/:id/notes', function (req, res) {
-	var id = req.params.id
-	db.query('SELECT `attachment`, `createdAt` FROM NOTES WHERE `classroom_id` = ?;', 
-		[id], 
+// return all notes in that classrooom based on classroom name
+router.get('/classroom/:className/notes', function (req, res) {
+	var name = req.params.className
+	db.query('SELECT NOTES.attachment, NOTES.creatAt FROM NOTES INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id WHERE CLASSROOMS.className = ?;', 
+		[name], 
 		function (err, rows) {
 		if(err) {
 			console.error(err)
@@ -62,9 +62,9 @@ router.get('/classroom/:id/notes', function (req, res) {
 
 // create a classroom
 router.post('/', function (req, res) {
-	var classname = req.body.classroom.name
-	db.query('INSERT INTO CLASSROOMS SET `name` = ?;', 
-		[classname], 
+	var name = req.body.classroom.className
+	db.query('INSERT INTO CLASSROOMS SET `className` = ?;', 
+		[name], 
 		function (err, rows) {
 			if(err) {
 				console.error(err)
