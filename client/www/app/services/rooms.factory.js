@@ -5,7 +5,7 @@
     .module('notesee')
     .factory('Rooms', Rooms)
 
-  function Rooms () {
+  function Rooms ($http) {
     //----- Mock Data ------
     // return [
     //   {name: 'MKS35'},
