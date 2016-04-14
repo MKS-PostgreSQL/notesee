@@ -3,6 +3,24 @@ var router = express.Router()
 var db = require('../db.js')
 
 // register a new user given: username, password, e-mail, full name
+/*
+	POST /api/landing/register
+
+	provide for req.body:
+		{
+		    "user": {
+		        "name": "Squidward Tentacles",
+		        "email": "squidward@gmail.com",
+		        "username": "squidster420",
+		        "password": "clarinet"
+		        }
+		}
+
+	receive back:
+		{
+			"success": true
+		}
+*/
 router.post('/register', function (req, res) {
 	var username = req.body.user.username
 	var password = req.body.user.password

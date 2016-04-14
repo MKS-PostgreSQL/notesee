@@ -9,10 +9,26 @@ var db = require('../db.js')
 
 
 // retrieve user informaiton details such as full name, username, date of registration given: user id
-router.get('/user/:id', function (req, res) {
-	var id = req.params.id
-	db.query('SELECT `full_name`, `username`, `createdAt` FROM USERS WHERE `id` = ?;',
-	 [id], 
+/* 
+
+	GET /api/users/user/merktassel
+
+	[
+	  {
+	    "full_name": null,
+	    "id": 2,
+	    "username": "merktassel",
+	    "createdAt": "2016-04-13T22:36:35.000Z",
+	    "email": "merk@tassel.com"
+	  }
+	]
+
+*/
+
+router.get('/user/:name', function (req, res) {
+	var username = req.params.name
+	db.query('SELECT `full_name`, `id`, `username`, `createdAt`, `email` FROM USERS WHERE `username` = ?;',
+	 [username], 
 	 function (err, rows) {
 		if (err) {
 			console.error(err)
@@ -23,7 +39,19 @@ router.get('/user/:id', function (req, res) {
 	})
 })
 
-// retrieve list of classrooms a user has joined given: user id
+// retrieve an array of classrooms a user has joined given: user id
+
+/*
+	GET /api/users/user/2/classrooms
+
+	[
+	  {
+	    "name": "Driving School"
+	  }
+	]
+
+*/
+
 router.get('/user/:id/classrooms', function (req, res) {
 	var id = req.params.id;
 	db.query('SELECT CLASSROOMS.name FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSROOMS.id = CLASSUSERS.classroom_id WHERE CLASSUSERS.user_id = ?;',
