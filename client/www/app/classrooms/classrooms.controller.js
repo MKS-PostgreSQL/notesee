@@ -7,6 +7,7 @@
 
   function ClassroomsController ($cordovaSocialSharing, $ionicModal, $scope, $state, Rooms) {
     var vm = this
+    var userId = $state.params.user
 
     vm.start = start
     vm.create = create
