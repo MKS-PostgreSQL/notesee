@@ -130,9 +130,9 @@ router.get('/user/:name/classrooms', function (req, res) {
 
 router.get('/user/:name/saved', function (req, res) {
 	var username = req.params.name
-	var getSavedNotes = 'SELECT CLASSROOMS.className, NOTES.attachment, NOTES.createdAt' 
-	'FROM NOTES' +
-	'INNER JOIN SAVEDNOTES ON NOTES.id = SAVEDNOTES.note_id' +
+	var getSavedNotes = 'SELECT CLASSROOMS.className, NOTES.attachment, NOTES.createdAt ' 
+	'FROM NOTES ' +
+	'INNER JOIN SAVEDNOTES ON NOTES.id = SAVEDNOTES.note_id ' +
 	'INNER JOIN SAVED ON SAVEDNOTES.saved_id = SAVED.id ' +
 	'INNER JOIN USERS ON SAVED.user_id = USERS.id ' +
 	'INNER JOIN CLASSROOMS ON NOTES.class_id = CLASSROOMS.id ' +
