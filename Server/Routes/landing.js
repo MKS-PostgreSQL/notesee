@@ -29,12 +29,22 @@ router.post('/register', function (req, res) {
 	console.log(req.body)
 	db.query('INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `full_name` = ?;',
 		[username, password, email, fullname],
-		function (err, rows) {
+		function (err, result1) {
 			if (err) {
 				console.error(err)
 				res.status(500).json({success: false})
 			} else {
-				res.status(201).json({success: true})
+				db.query('INSERT INTO SAVED SET `user_id` = ?;',
+					[result1.insertId],
+					function (err, result) {
+						if(err) {
+							console.error(err)
+							res.status(500).json({success: false})
+						} else {
+							console.log(result1.insertId)
+							res.status(201).json({success: true})
+						}
+					})
 			}
 		})
 })
