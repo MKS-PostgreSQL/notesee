@@ -76,6 +76,23 @@ router.post('/', function (req, res) {
 })
 
 // adds user to a classroom
+
+/* POST:
+{
+    "classroom" : {
+        "id" : 2
+    }, 
+    "user" : {
+        "id" : 12
+    }
+}
+receive back: 
+{
+  "success": true
+}
+
+ */
+ 
 router.post('/classroom/adduser', function (req, res) {
 	var classroom = req.body.classroom.id
 	var user = req.body.user.id

@@ -1,3 +1,5 @@
 node_modules/
 **/db.js
 **/credentials.js
+
+*.env
