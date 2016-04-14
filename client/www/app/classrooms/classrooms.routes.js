@@ -8,7 +8,10 @@
   function config ($stateProvider) {
     $stateProvider
       .state('tab.classrooms', {
-        url: '/classrooms',
+        url: '/classrooms/:user',
+        params: {
+          user: null
+        },
         views: {
           'tab-classrooms': {
             templateUrl: 'app/classrooms/classrooms.html',
