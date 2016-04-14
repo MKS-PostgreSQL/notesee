@@ -113,5 +113,40 @@ router.get('/user/:name/classrooms', function (req, res) {
 	})
 })
 
+// retrieve an array of saved notes for a specified user
+
+/*
+	GET /api/users/user/merktassel/saved
+	
+	[
+		{
+			"attachment": <url>,
+			"createdAt": <date>,
+			"className": "Driving School"
+		}
+	]
+
+*/
+
+router.get('/user/:name/saved', function (req, res) {
+	var username = req.params.name
+	var getSavedNotes = 'SELECT CLASSROOMS.className, NOTES.attachment, NOTES.createdAt' 
+	'FROM NOTES' +
+	'INNER JOIN SAVEDNOTES ON NOTES.id = SAVEDNOTES.note_id' +
+	'INNER JOIN SAVED ON SAVEDNOTES.saved_id = SAVED.id ' +
+	'INNER JOIN USERS ON SAVED.user_id = USERS.id ' +
+	'INNER JOIN CLASSROOMS ON NOTES.class_id = CLASSROOMS.id ' +
+	'WHERE USERS.username = ?;'
+	db.query(getSavedNotes,
+		[username],
+		function (err, rows) {
+			if (err) {
+				console.error(err) 
+				res.status(404).json({success: false})
+			} else {
+				res.status(200).json(rows)
+			}
+	})
+})
 
 module.exports = router
