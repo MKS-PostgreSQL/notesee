@@ -8,8 +8,7 @@ var db = require('../db.js')
 // users/:id/saved -> return all saved notes user has
 
 
-// grab user information by specifying username
-// ex. /users/user/danny => grab all user information for Danny from users table
+// retrieve user informaiton details such as full name, username, date of registration given: user id
 router.get('/user/:id', function (req, res) {
 	var id = req.params.id
 	db.query('SELECT `full_name`, `username`, `createdAt` FROM USERS WHERE `id` = ?;',
@@ -24,6 +23,7 @@ router.get('/user/:id', function (req, res) {
 	})
 })
 
+// retrieve list of classrooms a user has joined given: user id
 router.get('/user/:id/classrooms', function (req, res) {
 	var id = req.params.id;
 	db.query('SELECT CLASSROOMS.name FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSROOMS.id = CLASSUSERS.classroom_id WHERE CLASSUSERS.user_id = ?;',

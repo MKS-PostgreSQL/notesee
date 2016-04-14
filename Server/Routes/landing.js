@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router()
 var db = require('../db.js')
 
-// register user
+// register a new user given: username, password, e-mail, full name
 router.post('/register', function (req, res) {
 	var username = req.body.user.username
 	var password = req.body.user.password
