@@ -3,7 +3,6 @@ var app = express()
 var cors = require('cors')
 var bodyParser = require('body-parser')
 var morgan = require('morgan')
-// require('dotenv').config()
 var db = require('./db.js')
 
 // your routes requires go here
