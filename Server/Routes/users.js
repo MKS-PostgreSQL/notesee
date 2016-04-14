@@ -39,7 +39,7 @@ var db = require('../db.js')
 	]
 */
 router.get('/', function (req, res) {
-	db.query('SELECT `full_name`, `id`, `username`, `createdAt`, `email` FROM USERS;',
+	db.query('SELECT `fullName`, `id`, `username`, `createdAt`, `email` FROM USERS;',
 		function (err, rows) {
 			if (err) {
 				console.error(err)
@@ -73,7 +73,7 @@ router.get('/', function (req, res) {
 
 router.get('/user/:name', function (req, res) {
 	var username = req.params.name
-	db.query('SELECT `full_name`, `id`, `username`, `createdAt`, `email` FROM USERS WHERE `username` = ?;',
+	db.query('SELECT `fullName`, `id`, `username`, `createdAt`, `email` FROM USERS WHERE `username` = ?;',
 	 [username], 
 	 function (err, rows) {
 		if (err) {

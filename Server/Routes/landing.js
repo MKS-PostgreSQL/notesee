@@ -27,7 +27,7 @@ router.post('/register', function (req, res) {
 	var email = req.body.user.email
 	var fullname = req.body.user.name
 	console.log(req.body)
-	db.query('INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `full_name` = ?;',
+	db.query('INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `fullName` = ?;',
 		[username, password, email, fullname],
 		function (err, result1) {
 			if (err) {
