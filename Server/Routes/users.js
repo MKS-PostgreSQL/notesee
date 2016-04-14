@@ -9,6 +9,7 @@ var db = require('../db.js')
 
 
 
+
 // retrieve information on all users registered
 /*
 	GET /api/users/
@@ -99,8 +100,8 @@ router.get('/user/:name', function (req, res) {
 
 
 router.get('/user/:name/classrooms', function (req, res) {
-	var username = req.params.name;
-	db.query('SELECT CLASSROOMS.name FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSROOMS.id = CLASSUSERS.classroom_id INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE USERS.username = ?;',
+	var username = req.params.name
+	db.query('SELECT CLASSROOMS.className FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSROOMS.id = CLASSUSERS.classroom_id INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE USERS.username = ?;',
 	 [username],
 	 function (err, rows) {
 		if (err) {
