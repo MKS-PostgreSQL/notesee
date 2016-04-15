@@ -141,14 +141,12 @@ router.post('/classroom/adduser', function (req, res) {
 			if(err) {
 				console.error(err)
 			} else {
-				console.log("this is result1: ", result1)
 				db.query('SELECT `id` FROM CLASSROOMS WHERE `className` = ?;', 
 					[classroom], 
 					function (err, result2) {
 						if(err) {
 							console.error(err)
 						} else {
-							console.log("this is result2: ", result2)
 							db.query('INSERT INTO CLASSUSERS SET classroom_id = ?, user_id = ?;',
 								[result2[0].id, result1[0].id], 
 								function (err, rows) {
