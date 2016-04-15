@@ -55,4 +55,5 @@
   </platform>
   <plugin name="cordova-plugin-camera" spec="~2.1.1" />
   <plugin name="cordova-plugin-x-socialsharing" spec="https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git" />
+  <plugin name="cordova-plugin-inappbrowser" spec="https://git-wip-us.apache.org/repos/asf/cordova-plugin-inappbrowser.git" />
 </widget>
