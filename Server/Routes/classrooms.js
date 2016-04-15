@@ -121,10 +121,10 @@ router.post('/', function (req, res) {
 /* POST:
 {
     "classroom" : {
-        "id" : 2
+        "className" : "GreenCorps"
     }, 
     "user" : {
-        "id" : 12
+        "username" : "greenmachine"
     }
 }
 receive back: 
@@ -133,16 +133,33 @@ receive back:
 }
  */
 router.post('/classroom/adduser', function (req, res) {
-	var classroom = req.body.classroom.id
-	var user = req.body.user.id
-	db.query('INSERT INTO CLASSUSERS SET `classroom_id` = ?, `user_id` = ?;', 
-		[classroom, user], 
-		function (err, rows) {
+	var classroom = req.body.classroom.className
+	var user = req.body.user.username
+	db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
+		[user], 
+		function (err, result1) {
 			if(err) {
 				console.error(err)
-				res.status(500).json({success:false})
 			} else {
-				res.status(201).json({success:true})
+				console.log("this is result1: ", result1)
+				db.query('SELECT `id` FROM CLASSROOMS WHERE `className` = ?;', 
+					[classroom], 
+					function (err, result2) {
+						if(err) {
+							console.error(err)
+						} else {
+							console.log("this is result2: ", result2)
+							db.query('INSERT INTO CLASSUSERS SET classroom_id = ?, user_id = ?;',
+								[result2[0].id, result1[0].id], 
+								function (err, rows) {
+									if(err) {
+										console.error(err)
+									} else {
+										res.status(201).json({success:true})
+									}
+								})
+						}
+					})
 			}
 		})
 })
