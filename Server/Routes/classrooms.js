@@ -87,7 +87,7 @@ router.get('/classroom/:className/users', function (req, res) {
 // return all notes in that classrooom based on classroom name
 router.get('/classroom/:className/notes', function (req, res) {
 	var name = req.params.className
-	var query = 'SELECT NOTES.attachment, NOTES.creatAt FROM NOTES ' + 
+	var query = 'SELECT NOTES.attachment, NOTES.createdAt FROM NOTES ' + 
 	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' + 
 	'WHERE CLASSROOMS.className = ?;'
 	db.query(query, 
