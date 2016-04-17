@@ -14,6 +14,11 @@
             templateUrl: 'app/settings/settings.html',
             controller: 'SettingsController as settings'
           }
+        },
+        resolve: {
+          curentAuth: function(Auth) {
+            return Auth.$requireAuth()
+          }
         }
       })
   }

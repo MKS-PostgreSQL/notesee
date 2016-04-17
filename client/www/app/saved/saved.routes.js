@@ -14,6 +14,11 @@
             templateUrl: 'app/saved/saved.html',
             controller: 'SavedController as saved'
           }
+        },
+        resolve: {
+          curentAuth: function(Auth) {
+            return Auth.$requireAuth()
+          }
         }
       })
   }

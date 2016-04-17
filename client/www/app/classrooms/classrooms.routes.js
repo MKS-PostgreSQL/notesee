@@ -8,16 +8,18 @@
   function config ($stateProvider) {
     $stateProvider
       .state('tab.classrooms', {
-        url: '/classrooms/:user',
-        params: {
-          user: null
-        },
+        url: '/classrooms',
         views: {
           'tab-classrooms': {
             templateUrl: 'app/classrooms/classrooms.html',
             controller: 'ClassroomsController as classrooms'
           }
-        }
+        },
+        resolve: {
+    			curentAuth: function(Auth) {
+    				return Auth.$requireAuth()
+    			}
+    		}
       })
   }
 })()

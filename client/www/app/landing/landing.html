@@ -4,9 +4,10 @@
   <!-- Content Wrapper -->
   <ion-content>
 
-    <!-- Sign In Button -->
+    <!-- Sign In Buttons -->
     <div class="padding">
-      <button ng-click="landing.signIn()" class="button button-block button-stable">Sign In with OAuth</button>
+      <button ng-click="landing.signIn('facebook')" class="button button-block button-stable">Facebook</button>
+      <button ng-click="landing.signIn('github')" class="button button-block button-stable">Github</button>
     </div>
   </ion-content>
 </ion-view>
