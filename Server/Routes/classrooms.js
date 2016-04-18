@@ -114,7 +114,7 @@ router.get('/classroom/:className/notes', function (req, res) {
 	var errorSent = false;
 	var arrSaved;
 	var classroomNotes;
-	var query = 'SELECT NOTES.id, NOTES.attachment, NOTES.createdAt, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
+	var query = 'SELECT NOTES.id, NOTES.attachment, NOTES.createdAt, CLASSROOMS.code, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
 	'INNER JOIN TAGNOTES ON TAGNOTES.note_id = NOTES.id ' +
 	'INNER JOIN TAGS ON TAGNOTES.tag_id = TAGS.id ' +
 	'INNER JOIN USERS ON NOTES.user_id = USERS.id ' + 
@@ -147,10 +147,10 @@ router.get('/classroom/:className/notes', function (req, res) {
 				}
 			} else {
 				classroomNotes = rows
-				for (var i = 0; i < classroomNotes; i++) {
+				for (var i = 0; i < classroomNotes.length; i++) {
 					var cnoteID = classroomNotes[i].id 
-					for (var j = 0; j < arrSaved; j++) {
-						if (cnoteID === arrSaved[i].id) {
+					for (var j = 0; j < arrSaved.length; j++) {
+						if (cnoteID === arrSaved[i].note_id) {
 							classroomNotes[i].favorite = true
 						}
 					}
