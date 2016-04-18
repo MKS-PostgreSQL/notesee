@@ -125,7 +125,7 @@ router.get('/user/:name/classrooms', function (req, res) {
 	auth.verifyToken(token, grabClassrooms, error)
 })
 
-// retrieve an array of saved notes for a specified user
+// retrieve an array of saved notes for a specified user [in progress/unfinished]
 
 /*
 	GET /api/users/user/merktassel/saved
