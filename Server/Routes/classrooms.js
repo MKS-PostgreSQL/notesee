@@ -120,7 +120,7 @@ router.get('/classroom/:className/notes', function (req, res) {
 	'INNER JOIN USERS ON NOTES.user_id = USERS.id ' + 
 	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' +
 	'WHERE CLASSROOMS.className = ? ORDER BY NOTES.createdAt DESC;'
-	var query2 = 'SELECT NOTES.id FROM SAVEDNOTES INNER JOIN SAVED ON SAVED.id = SAVEDNOTES.saved_id INNER JOIN USERS ON USERS.id = SAVED.user_id WHERE USERS.username = ?;'
+	var query2 = 'SELECT SAVEDNOTES.note_id FROM SAVEDNOTES INNER JOIN SAVED ON SAVED.id = SAVEDNOTES.saved_id INNER JOIN USERS ON USERS.id = SAVED.user_id WHERE USERS.username = ?;'
 
 	// grab user's saved notes [{notesID 1}, {notesID 2}]
 	db.query(query2,
