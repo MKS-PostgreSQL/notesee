@@ -44,9 +44,41 @@ router.post('/register', function (req, res) {
 							res.status(500).json({success: false})
 						} else {
 							var userId = result1.insertId
-							res.status(201).json({success: true, token: auth.generateToken(userId, username) })
+							res.status(201).json({success: true, token: auth.generateToken(userId, username), username: username, userId: result1[1]})
 						}
 					})
+			}
+		})
+})
+
+router.post('/login', function (req, res) {
+	var username = req.body.user.username
+	var password = req.body.user.password
+	db.query('SELECT `username`, `id` FROM USERS WHERE `username` = ?;',
+		[username],
+		function (err, result1) {
+			if (err) {
+				console.error(err)
+				res.status(500).json({success: false})
+			} else {
+				if(!result1.length) {
+					res.json({success: false})
+				} else {
+					db.query('SELECT `password` FROM USERS WHERE `password` = ?;',
+						[password],
+						function (err, result2) {
+							if(err) {
+								console.error(err)
+								res.status(500).json({success: false})
+							} else {
+								if(result2.length) {
+									res.json({success: true, token: auth.generateToken(result1[1], username), username: username, userId: result1[1]})
+								} else {
+									res.json({success: false})
+								}
+							}
+						})
+				}
 			}
 		})
 })
