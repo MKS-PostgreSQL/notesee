@@ -18,108 +18,108 @@ router.post('/', function (req, res) {
   var key = pseudoRandomString();
   var base64image = req.body.attachment.base64
   var postNote = function () {
-	  sendToS3(base64image, key)
-	  .then(function(data) {
-	  	var attachment = data;
-	  	var tags = req.body.tags.name
-	  	var user = req.headers.username
-	  	var classroom = req.body.classroom.className
-	  	db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
-	  		[user], 
-	  		function (err, result1) {
-	  			if(err) {
-	  				console.error(err)
-	  			} else {
-	  				db.query('SELECT `id` FROM CLASSROOMS WHERE `className` = ?;',
-	  					[classroom], 
-	  					function (err, result2) {
-	  						if(err) {
-	  							console.error(err)
-	  						} else {
-	  							if (result1[0] === undefined || result2[0] === undefined) {
-	  							  	res.status(500).json({success:false});
-	  							  } else {
-	  							  	db.query('INSERT INTO NOTES SET `attachment` = ?, `user_id` = ?, `classroom_id` = ?;',
-	  								[attachment, result1[0].id, result2[0].id],
-	  								function (err, result3) {
-	  									if(err) {
-	  										console.error(err)
-	  									} else {
-	  										db.query('INSERT INTO TAGS SET `name` = ?;', 
-	  											[tags], 
-	  											function (err, result4) {
-	  												if(err) {
-	  													console.error(err)
-	  												} else {
-	  													db.query('INSERT INTO TAGNOTES SET `note_id` = ?, `tag_id` = ?;',
-	  														[result3.insertId, result4.insertId],
-	  														function (err, rows) {
-	  															if(err) {
-	  																console.error(err)
-	  																res.status()
-	  															} else {
-	  																res.status(201).json({success:true})
-	  															}
-	  														})
-	  												}
-	  											})
-	  									}
-	  								})
-	  							  }
-	  							
-	  						}
-	  					})
-	  			}
-	  		})
-	  })
+    sendToS3(base64image, key)
+    .then(function(data) {
+      var attachment = data;
+      var tags = req.body.tags.name
+      var user = req.headers.username
+      var classroom = req.body.classroom.className
+      db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
+        [user], 
+        function (err, result1) {
+          if(err) {
+            console.error(err)
+          } else {
+            db.query('SELECT `id` FROM CLASSROOMS WHERE `className` = ?;',
+              [classroom], 
+              function (err, result2) {
+                if(err) {
+                  console.error(err)
+                } else {
+                  if (result1[0] === undefined || result2[0] === undefined) {
+                      res.status(500).json({success:false});
+                    } else {
+                      db.query('INSERT INTO NOTES SET `attachment` = ?, `user_id` = ?, `classroom_id` = ?;',
+                    [attachment, result1[0].id, result2[0].id],
+                    function (err, result3) {
+                      if(err) {
+                        console.error(err)
+                      } else {
+                        db.query('INSERT INTO TAGS SET `name` = ?;', 
+                          [tags], 
+                          function (err, result4) {
+                            if(err) {
+                              console.error(err)
+                            } else {
+                              db.query('INSERT INTO TAGNOTES SET `note_id` = ?, `tag_id` = ?;',
+                                [result3.insertId, result4.insertId],
+                                function (err, rows) {
+                                  if(err) {
+                                    console.error(err)
+                                    res.status()
+                                  } else {
+                                    res.status(201).json({success:true})
+                                  }
+                                })
+                            }
+                          })
+                      }
+                    })
+                    }
+                  
+                }
+              })
+          }
+        })
+    })
   }
   var error = function () {
-  	res.status(404).json({success: false, tokenValid: false})
+    res.status(404).json({success: false, tokenValid: false})
   }
   auth.verifyToken(token, postNote, error)
 });
 
 router.post('/save', function (req, res) {
-	var token = req.headers.token
-	var username = req.headers.username
-	var noteId = req.body.notes.noteId
-	var saveNote = function () {
-		db.query('SELECT `id` FROM USERS WHERE `username` = ?;',
-			[username],
-			function (err, rows) {
-				if (err) {
-					console.error(err)
-					res.status(500).json({success:false})
-				} else {
-					var userId = rows[0].id
-					db.query('SELECT `id` FROM SAVED WHERE `user_id` = ?;',
-						[userId],
-						function (err, result) {
-							if (err) {
-								console.error(err)
-								res.status(500).json({success:false})
-							} else {
-								var savedId = result[0].id
-								db.query('INSERT INTO SAVEDNOTES SET `note_id` = ?, `saved_id` = ?;',
-									[noteId, savedId],
-									function (err, result2) {
-										if (err) {
-											console.error(err)
-											res.status(500).json({success:false})
-										} else {
-											res.status(201).json({success: true})
-										}
-									})
-							}
-						})
-				}
-			})
-		
-	}
-	var error = function () {
-		res.status(404).json({success: false, tokenValid: false})
-	}
-	auth.verifyToken(token, saveNote, error)
+  var token = req.headers.token
+  var username = req.headers.username
+  var noteId = req.body.notes.noteId
+  var saveNote = function () {
+    db.query('SELECT `id` FROM USERS WHERE `username` = ?;',
+      [username],
+      function (err, rows) {
+        if (err) {
+          console.error(err)
+          res.status(500).json({success:false})
+        } else {
+          var userId = rows[0].id
+          db.query('SELECT `id` FROM SAVED WHERE `user_id` = ?;',
+            [userId],
+            function (err, result) {
+              if (err) {
+                console.error(err)
+                res.status(500).json({success:false})
+              } else {
+                var savedId = result[0].id
+                db.query('INSERT INTO SAVEDNOTES SET `note_id` = ?, `saved_id` = ?;',
+                  [noteId, savedId],
+                  function (err, result2) {
+                    if (err) {
+                      console.error(err)
+                      res.status(500).json({success:false})
+                    } else {
+                      res.status(201).json({success: true})
+                    }
+                  })
+              }
+            })
+        }
+      })
+    
+  }
+  var error = function () {
+    res.status(404).json({success: false, tokenValid: false})
+  }
+  auth.verifyToken(token, saveNote, error)
 })
 
 
@@ -134,7 +134,7 @@ function sendToS3 (img, key) {
           console.log('Error: ', err);
           reject(err);   
       } else {    
-      	  console.log('Data: ', data);
+          console.log('Data: ', data);
           resolve(data.Location);
       }
     })
@@ -143,5 +143,6 @@ function sendToS3 (img, key) {
     console.log('Error');
   })
 };
+
 
 module.exports = router
