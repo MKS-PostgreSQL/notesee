@@ -5,4 +5,4 @@ var credentials = {
 	secretAccessKey: process.env.AWS_SECRET
 }
 
-module.exports = credentials;
+module.exports = credentials
