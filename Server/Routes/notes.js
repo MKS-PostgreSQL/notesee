@@ -81,7 +81,7 @@ router.post('/', function (req, res) {
 
 router.post('/save', function (req, res) {
 	var token = req.headers.token
-	var username = req.header.username
+	var username = req.headers.username
 	var noteId = req.body.notes.noteId
 	var saveNote = function () {
 		db.query('SELECT `id` FROM USERS WHERE `username` = ?;',
