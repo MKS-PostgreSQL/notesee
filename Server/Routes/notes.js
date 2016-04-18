@@ -40,24 +40,26 @@ router.post('/', function (req, res) {
   									if(err) {
   										console.error(err)
   									} else {
-  										db.query('INSERT INTO TAGS SET `name` = ?;', 
-  											[tags], 
-  											function (err, result4) {
-  												if(err) {
-  													console.error(err)
-  												} else {
-  													db.query('INSERT INTO TAGNOTES SET `note_id` = ?, `tag_id` = ?;',
-  														[result3.insertId, result4.insertId],
-  														function (err, rows) {
-  															if(err) {
-  																console.error(err)
-  																res.status(500).json({success:false})
-  															} else {
-  																res.status(201).json({success:true})
-  															}
-  														})
-  												}
+  										tags.forEach(function (tag) {
+	  										db.query('INSERT INTO TAGS SET `name` = ?;', 
+	  											[tag], 
+	  											function (err, result4) {
+	  												if(err) {
+	  													console.error(err)
+	  												} else {
+	  													db.query('INSERT INTO TAGNOTES SET `note_id` = ?, `tag_id` = ?;',
+	  														[result3.insertId, result4.insertId],
+	  														function (err, rows) {
+	  															if(err) {
+	  																console.error(err)
+	  															} else {
+	  																console.log("rows success")
+	  															}
+	  														})
+	  												}
   											})
+  										})
+	  									res.status(201).json({success:true})
   									}
   								})
   						}
