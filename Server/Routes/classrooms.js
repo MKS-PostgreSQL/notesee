@@ -152,6 +152,8 @@ router.get('/classroom/:className/notes', function (req, res) {
 					for (var j = 0; j < arrSaved.length; j++) {
 						if (cnoteID === arrSaved[i].note_id) {
 							classroomNotes[i].saved = true
+						} else {
+							classroomNotes[i].saved = false
 						}
 					}
 				}
