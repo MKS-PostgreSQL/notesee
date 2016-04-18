@@ -64,8 +64,6 @@ router.post('/register', function (req, res) {
 				}
 			}
 		})
-
-	
 })
 
 router.post('/login', function (req, res) {
