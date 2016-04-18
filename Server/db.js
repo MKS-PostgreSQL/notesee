@@ -8,8 +8,6 @@ var db = mysql.createConnection({
   database: process.env.DB_DB
 })
 
-
-
 db.connect(function (err) {
   if(!err) {
     console.log('Database is connected')
