@@ -66,10 +66,28 @@ router.post('/register', function (req, res) {
 		})
 })
 
+//login - given: username, password
+/*
+  POST /api/landing/register
+
+  provide for req.body:
+    {
+        "user": {
+            "username": "squidster420",
+            "password": "clarinet"
+            }
+    }
+
+  receive back:
+    {
+      "success": true
+      "token": [long string]
+    }
+*/
+
 router.post('/login', function (req, res) {
 	var username = req.body.user.username
 	var password = req.body.user.password
-	var userid;
 	db.query('SELECT `username`, `id` FROM USERS WHERE `username` = ?;',
 		[username],
 		function (err, result1) {
@@ -98,18 +116,5 @@ router.post('/login', function (req, res) {
 			}
 		})
 })
-
-// Refactor in progress
-
-// router.post('/register', function (req, res) {
-// 	var username = req.body.user.username
-// 	var password = req.body.user.password
-// 	var email = req.body.user.email
-// 	var fullname = req.body.user.name
-// 	var regUser = 'INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `fullName` = ?;'
-// 	var createSave = 'INSERT INTO SAVED SET `user_id` = ?;'
-// 	var sendToken = res.status(201).json({success: true, token: auth.generateToken(result1.insertId, username)})
-// 	query.send(regUser, [username, password, email, fullname], query.send(createSave, [result1.insertId], sendToken))
-// })
 
 module.exports = router
