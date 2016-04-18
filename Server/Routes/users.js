@@ -108,7 +108,7 @@ router.get('/user/:name/classrooms', function (req, res) {
 	var username = req.headers.username
 	var token = req.headers.token
 	var grabClassrooms = function () {
-		db.query('SELECT CLASSROOMS.className FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSROOMS.id = CLASSUSERS.classroom_id INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE USERS.username = ?;',
+		db.query('SELECT CLASSROOMS.className, CLASSROOMS.code, FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSROOMS.id = CLASSUSERS.classroom_id INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE USERS.username = ?;',
 		 [username],
 		 function (err, rows) {
 			if (err) {
