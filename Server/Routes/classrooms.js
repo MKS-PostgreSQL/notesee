@@ -182,10 +182,13 @@ router.post('/classroom/adduser', function (req, res) {
 			if(err) {
 				console.error(err)
 			} else {
+				var found = false
 				result.forEach(function (value) {
 					if(value.className === classroom) {
-						res.status(500).json({success:false})
-					} else {
+						var found = true
+						}
+					}) 
+					if (found = false) {
 						db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
 							[user], 
 							function (err, result1) {
@@ -213,8 +216,9 @@ router.post('/classroom/adduser', function (req, res) {
 										})
 								}
 							})
+					} else {
+						res.status(500).json({success:false})
 					}
-				})
 			}
 		})
 })
