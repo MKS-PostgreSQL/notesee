@@ -14,13 +14,12 @@ function pseudoRandomString() {
 AWS.config.update({accessKeyId: credentials.accessKeyId, secretAccessKey: credentials.secretAccessKey, region: 'us-west-1'});
 
 router.post('/', function (req, res) {
-	var token = req.headers.token
+  var token = req.headers.token
   var key = pseudoRandomString();
   var base64image = req.body.attachment.base64
   var postNote = function () {
 	  sendToS3(base64image, key)
 	  .then(function(data) {
-	  	console.log(data)
 	  	var attachment = data;
 	  	var tags = req.body.tags.name
 	  	var user = req.headers.username
@@ -91,7 +90,7 @@ function sendToS3 (img, key) {
           console.log('Error: ', err);
           reject(err);   
       } else {    
-      	  console.log('DATA',data);
+      	  console.log('Data: ', data);
           resolve(data.Location);
       }
     })

@@ -79,7 +79,6 @@ router.post('/login', function (req, res) {
 				console.error(err)
 				res.status(500).json({success: false})
 			} else {
-				console.log('array result1: ', result1)
 				if(!result1.length) {
 					res.json({success: false})
 				} else {

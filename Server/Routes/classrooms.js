@@ -280,7 +280,6 @@ router.post('/classroom/removeuser', function (req, res) {
 							if(err) {
 								console.error(err)
 							} else {
-								console.log('RESULTS: ', result1, result2)
 								if (result1[0] === undefined || result2[0] === undefined) {
 								res.status(500).json({success:false});
 							} else {
