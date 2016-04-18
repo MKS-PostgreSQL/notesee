@@ -25,7 +25,7 @@ var db = require('../db.js')
 */
 
 router.post('/register', function (req, res) {
-	var username = req.headers.username
+	var username = req.body.user.username
 	var password = req.body.user.password
 	var email = req.body.user.email
 	var fullname = req.body.user.name
