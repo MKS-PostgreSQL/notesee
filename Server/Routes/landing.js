@@ -51,6 +51,38 @@ router.post('/register', function (req, res) {
 		})
 })
 
+router.post('/login', function (req, res) {
+	var username = req.body.user.username
+	var password = req.body.user.password
+	db.query('SELECT `username` FROM USERS WHERE `username` = ?;',
+		[username],
+		function (err, result1) {
+			if (err) {
+				console.error(err)
+				res.status(500).json({success: false})
+			} else {
+				if(!result1.length) {
+					res.json({success: false})
+				} else {
+					db.query('SELECT `password` FROM USERS WHERE `password` = ?;',
+						[password],
+						function (err, result2) {
+							if(err) {
+								console.error(err)
+								res.status(500).json({success: false})
+							} else {
+								if(result2.length) {
+									res.json({success: true})
+								} else {
+									res.json({success: false})
+								}
+							}
+						})
+				}
+			}
+		})
+})
+
 
 // Refactor in progress
 
