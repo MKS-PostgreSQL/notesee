@@ -165,7 +165,7 @@ router.get('/user/:name/saved', function (req, res) {
 	var error = function () {
 		res.status(404).json({success: false, tokenValid: false})
 	}
-	auth.verifyToken(token, grabClassrooms, error)
+	auth.verifyToken(token, grabSaved, error)
 })
 
 module.exports = router
