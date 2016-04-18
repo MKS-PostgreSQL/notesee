@@ -13,9 +13,7 @@ function pseudoRandomString() {
 AWS.config.update({accessKeyId: credentials.accessKeyId, secretAccessKey: credentials.secretAccessKey, region: 'us-west-1'});
 
 router.post('/', function (req, res) {
-  console.log('THIS IS THE REQUEST BODY ', req.body)
   var key = pseudoRandomString();
-  console.log(key)
   var base64image = req.body.attachment.base64
   sendToS3(base64image, key)
   .then(function(data) {
