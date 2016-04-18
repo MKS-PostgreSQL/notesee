@@ -15,8 +15,6 @@ AWS.config.update({accessKeyId: credentials.accessKeyId, secretAccessKey: creden
 router.post('/', function (req, res) {
   var key = pseudoRandomString();
   var base64image = req.body.attachment.base64
-  console.log(key)
-  console.log(base64image)
   sendToS3(base64image, key)
   .then(function(data) {
   	console.log(data)
