@@ -110,6 +110,17 @@ function pseudoRandomString() {
 }
 
 // create a classroom
+/* POST:
+{
+    "classroom" : {
+        "className" : "GreenCorps"
+    }
+}
+receive back:
+{
+  "code": "rwhkq"
+}
+*/
 router.post('/', function (req, res) {
 	var code = pseudoRandomString()
 	var name = req.body.classroom.className
