@@ -37,3 +37,4 @@ fs.readFile(__dirname + '/schema.sql', 'utf-8', function(err, data){
 setInterval(function () { db.query('SELECT 1') }, 5000)
 
 module.exports = db
+
