@@ -38,7 +38,7 @@ router.post('/register', function (req, res) {
 				res.status(500).json({success: false})
 			} else {
 				if(!result.length) {
-					//create user
+					// create user if not found
 					db.query('INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `fullName` = ?;',
 						[username, password, email, fullname],
 						function (err, result1) {
@@ -60,7 +60,7 @@ router.post('/register', function (req, res) {
 							}
 						})
 				} else {
-					// user already exists
+					// otherwise return false if user exists
 					res.json({success: false, userAlreadyExists: true})
 				}
 			}
@@ -72,6 +72,7 @@ router.post('/register', function (req, res) {
 router.post('/login', function (req, res) {
 	var username = req.body.user.username
 	var password = req.body.user.password
+	var userid;
 	db.query('SELECT `username`, `id` FROM USERS WHERE `username` = ?;',
 		[username],
 		function (err, result1) {
@@ -79,6 +80,7 @@ router.post('/login', function (req, res) {
 				console.error(err)
 				res.status(500).json({success: false})
 			} else {
+				console.log('array result1: ', result1)
 				if(!result1.length) {
 					res.json({success: false})
 				} else {
@@ -90,7 +92,7 @@ router.post('/login', function (req, res) {
 								res.status(500).json({success: false})
 							} else {
 								if(result2.length) {
-									res.json({success: true, token: auth.generateToken(result1[1], username), username: username, userId: result1[1]})
+									res.json({success: true, token: auth.generateToken(result1[0].id, username), username: username, userId: result1[0].id})
 								} else {
 									res.json({success: false})
 								}
