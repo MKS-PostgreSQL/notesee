@@ -176,31 +176,45 @@ router.post('/classroom/adduser', function (req, res) {
 	var code = req.body.classroom.code
 	var classroom = req.body.classroom.className
 	var user = req.body.user.username
-	db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
-		[user], 
-		function (err, result1) {
+	db.query('SELECT CLASSROOMS.className FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSUSERS.classroom_id = CLASSROOMS.id INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE USERS.username = ?;',
+		[user],
+		function (err, result) {
 			if(err) {
 				console.error(err)
 			} else {
-				db.query('SELECT `id`, `code` FROM CLASSROOMS WHERE `className` = ?;', 
-					[classroom], 
-					function (err, result2) {
-						if (err) {
-							console.error(err)
-						} else {
-							if (result2[0].code === code) {
-								db.query('INSERT INTO CLASSUSERS SET user_id = ?, classroom_id = ?;', 
-									[result1[0].id, result2[0].id],
-									function (err, rows) {
-										if(err) {
-											console.error(err)
-										} else {
-											res.status(201).json({success:true})
-										}
-									})
-							}
-						}
-					})
+				result.forEach(function (value) {
+					if(value.className === classroom) {
+						res.status(500).json({success:false})
+					} else {
+						db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
+							[user], 
+							function (err, result1) {
+								if(err) {
+									console.error(err)
+								} else {
+									db.query('SELECT `id`, `code` FROM CLASSROOMS WHERE `className` = ?;', 
+										[classroom], 
+										function (err, result2) {
+											if (err) {
+												console.error(err)
+											} else {
+												if (result2[0].code === code) {
+													db.query('INSERT INTO CLASSUSERS SET user_id = ?, classroom_id = ?;', 
+														[result1[0].id, result2[0].id],
+														function (err, rows) {
+															if(err) {
+																console.error(err)
+															} else {
+																res.status(201).json({success:true})
+															}
+														})
+												}
+											}
+										})
+								}
+							})
+					}
+				})
 			}
 		})
 })
