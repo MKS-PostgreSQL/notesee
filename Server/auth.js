@@ -1,15 +1,15 @@
 var jwt = require('jsonwebtoken')
 var dotenv = require('dotenv').config()
 
+var auth = {}
+
 // creates a token string
-var generateToken = function (userId, username, callback) {
-	return jwt.sign({ userId: userId}, process.env.NTS_SECRET, "12h", function (token) {
-		callback(token)
-	})
+auth.generateToken = function (userId, username) {
+	return jwt.sign({ userId: userId}, process.env.NTS_SECRET, "12h")
 }
 
-// checks to see if a token 
-var verifyToken = function (token, successCb, errorCb) {
+// checks to see if token is valid
+auth.verifyToken = function (token, successCb, errorCb) {
 	return jwt.verify(token, process.env.NTS_SECRET, function (err, decoded) {
 		if (err) {
 			errorCb()
@@ -19,3 +19,4 @@ var verifyToken = function (token, successCb, errorCb) {
 	})
 }
 
+module.exports = auth

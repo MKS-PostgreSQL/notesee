@@ -1,5 +1,7 @@
 var express = require('express')
 var router = express.Router()
+var auth = require('../auth.js')
+var query = require('../helpers.js')
 var db = require('../db.js')
 
 // register a new user given: username, password, e-mail, full name
@@ -21,12 +23,12 @@ var db = require('../db.js')
 			"success": true
 		}
 */
+
 router.post('/register', function (req, res) {
 	var username = req.body.user.username
 	var password = req.body.user.password
 	var email = req.body.user.email
 	var fullname = req.body.user.name
-	console.log(req.body)
 	db.query('INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `fullName` = ?;',
 		[username, password, email, fullname],
 		function (err, result1) {
@@ -41,12 +43,28 @@ router.post('/register', function (req, res) {
 							console.error(err)
 							res.status(500).json({success: false})
 						} else {
-							console.log(result1.insertId)
-							res.status(201).json({success: true})
+							var userId = result1.insertId
+							res.status(201).json({success: true, token: auth.generateToken(userId, username) })
 						}
 					})
 			}
 		})
 })
+
+
+// Refactor in progress
+
+// router.post('/register', function (req, res) {
+// 	var username = req.body.user.username
+// 	var password = req.body.user.password
+// 	var email = req.body.user.email
+// 	var fullname = req.body.user.name
+// 	var regUser = 'INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `fullName` = ?;'
+// 	var createSave = 'INSERT INTO SAVED SET `user_id` = ?;'
+// 	var sendToken = res.status(201).json({success: true, token: auth.generateToken(result1.insertId, username)})
+// 	query.send(regUser, [username, password, email, fullname], query.send(createSave, [result1.insertId], sendToken))
+// })
+
+
 
 module.exports = router
