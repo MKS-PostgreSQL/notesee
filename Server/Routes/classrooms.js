@@ -109,22 +109,53 @@ router.get('/classroom/:className/users', function (req, res) {
 // return all notes in that classrooom based on classroom name
 router.get('/classroom/:className/notes', function (req, res) {
 	var token = req.headers.token
+	var username = req.headers.username
 	var name = req.params.className
+	var errorSent = false;
+	var arrSaved;
+	var classroomNotes;
 	var query = 'SELECT NOTES.id, NOTES.attachment, NOTES.createdAt, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
 	'INNER JOIN TAGNOTES ON TAGNOTES.note_id = NOTES.id ' +
 	'INNER JOIN TAGS ON TAGNOTES.tag_id = TAGS.id ' +
 	'INNER JOIN USERS ON NOTES.user_id = USERS.id ' + 
 	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' +
 	'WHERE CLASSROOMS.className = ? ORDER BY NOTES.createdAt DESC;'
+	var query2 = 'SELECT NOTES.id FROM SAVEDNOTES INNER JOIN SAVED ON SAVED.id = SAVEDNOTES.saved_id INNER JOIN USERS ON USERS.id = SAVED.user_id WHERE USERS.username = ?;'
+
+	// grab user's saved notes [{notesID 1}, {notesID 2}]
+	db.query(query2,
+		[username],
+	  function (err, result) {
+	  	if (err) {
+	  		if(!errorSent) {
+	  			console.error(err)
+	  			res.status(404).json({success:false})
+	  		}
+	  	} else {
+	  		arrSaved = result;
+	  	}
+	})
+
 	var getAllNotesInClass = function () {
 		db.query(query, 
 			[name], 
 			function (err, rows) {
 			if(err) {
-				console.error(err)
-				res.status(404).json({success:false})
+				if(!errorSent) {
+					console.error(err)
+					res.status(404).json({success:false})
+				}
 			} else {
-				res.json(rows)
+				classroomNotes = rows
+				for (var i = 0; i < classroomNotes; i++) {
+					var cnoteID = classroomNotes[i].id 
+					for (var j = 0; j < arrSaved; j++) {
+						if (cnoteID === arrSaved[i].id) {
+							classroomNotes[i].favorite = true
+						}
+					}
+				}
+				res.json(classroomNotes)
 			}
 		})
 	}
