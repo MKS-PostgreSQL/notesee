@@ -184,11 +184,50 @@ router.post('/classroom/adduser', function (req, res) {
 			}
 		})
 })
-	
+
+// removes user from a classroom
+/* POST
+{
+    "classroom" : {
+        "className" : "GreenCorps"
+    }, 
+    "user" : {
+        "username" : "greenmachine"
+    }
+}
+receive back: 
+{
+  "success": true
+}
+ */
+router.post('/classroom/removeuser', function (req, res) {
+	var classroom = req.body.classroom.className
+	var user = req.body.user.username
+	db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
+		[user], 
+		function (err, result1) {
+			if(err) {
+				console.error(err)
+			} else {
+				db.query('SELECT `id` FROM CLASSROOMS WHERE `className` = ?;', 
+					[classroom], 
+					function (err, result2) {
+						if(err) {
+							console.error(err)
+						} else {
+							db.query('DELETE FROM CLASSUSERS WHERE classroom_id = ? AND user_id = ?;',
+								[result2[0].id, result1[0].id], 
+								function (err, rows) {
+									if(err) {
+										console.error(err)
+									} else {
+										res.status(201).json({success:true})
+									}
+								})
+						}
+					})
+			}
+		})
+})
 
 module.exports = router
-
-
-
-
-
