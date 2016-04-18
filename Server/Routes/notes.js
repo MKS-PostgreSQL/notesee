@@ -23,7 +23,7 @@ router.post('/', function (req, res) {
 	  	console.log(data)
 	  	var attachment = data;
 	  	var tags = req.body.tags.name
-	  	var user = req.body.user.username
+	  	var user = req.headers.username
 	  	var classroom = req.body.classroom.className
 	  	db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
 	  		[user], 

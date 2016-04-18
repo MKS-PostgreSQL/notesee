@@ -157,7 +157,7 @@ router.post('/', function (req, res) {
 	var token = req.headers.token
 	var code = pseudoRandomString()
 	var name = req.body.classroom.className
-	var user = req.body.user.username
+	var username = req.headers.username
 	var createClass = function () {
 		db.query('INSERT INTO CLASSROOMS SET `className` = ?, `code` = ?;',
 			[name, code],
@@ -166,7 +166,7 @@ router.post('/', function (req, res) {
 					console.error(err)
 				} else {
 					db.query('SELECT `id` FROM USERS WHERE `username` = ?;',
-						[user],
+						[username],
 						function (err, result2) {
 							if(err) {
 								console.error(err)
@@ -212,10 +212,10 @@ router.post('/classroom/adduser', function (req, res) {
 	var token = req.headers.token
 	var code = req.body.classroom.code
 	var classroom = req.body.classroom.className
-	var user = req.body.user.username
+	var username = req.headers.username
 	var addUserToClass = function () {
 		db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
-			[user], 
+			[username], 
 			function (err, result1) {
 				if(err) {
 					console.error(err)
@@ -266,10 +266,10 @@ receive back:
 router.post('/classroom/removeuser', function (req, res) {
 	var token = req.headers.token
 	var classroom = req.body.classroom.className
-	var user = req.body.user.username
+	var username = req.headers.username
 	var removeUserFromClass = function () {
 		db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
-			[user], 
+			[username], 
 			function (err, result1) {
 				if(err) {
 					console.error(err)
