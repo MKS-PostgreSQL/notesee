@@ -87,8 +87,11 @@ router.get('/classroom/:className/users', function (req, res) {
 // return all notes in that classrooom based on classroom name
 router.get('/classroom/:className/notes', function (req, res) {
 	var name = req.params.className
-	var query = 'SELECT NOTES.attachment, NOTES.createdAt FROM NOTES ' + 
-	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' + 
+	var query = 'SELECT NOTES.attachment, NOTES.createdAt, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
+	'INNER JOIN TAGNOTES ON TAGNOTES.note_id = NOTES.id ' +
+	'INNER JOIN TAGS ON TAGNOTES.tag_id = TAGS.id ' +
+	'INNER JOIN USERS ON NOTES.user_id = USERS.id ' + 
+	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' +
 	'WHERE CLASSROOMS.className = ?;'
 	db.query(query, 
 		[name], 
@@ -102,17 +105,33 @@ router.get('/classroom/:className/notes', function (req, res) {
 	})
 })
 
+function pseudoRandomString() {
+    return Math.round((Math.pow(36, 6) - Math.random() * Math.pow(36, 5))).toString(36).slice(1);
+}
+
 // create a classroom
+/* POST:
+{
+    "classroom" : {
+        "className" : "GreenCorps"
+    }
+}
+receive back:
+{
+  "code": "rwhkq"
+}
+*/
 router.post('/', function (req, res) {
+	var code = pseudoRandomString()
 	var name = req.body.classroom.className
-	db.query('INSERT INTO CLASSROOMS SET `className` = ?;', 
-		[name], 
+	db.query('INSERT INTO CLASSROOMS SET `className` = ?, `code` = ?;', 
+		[name, code], 
 		function (err, rows) {
 			if(err) {
 				console.error(err)
 				res.status(500).json({success:false})
 			} else {
-				res.status(201).json({success:true})
+				res.status(201).json({code:code})
 			}
 		})
 })
