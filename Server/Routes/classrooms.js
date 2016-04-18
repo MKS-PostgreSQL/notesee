@@ -87,13 +87,13 @@ router.get('/classroom/:className/users', function (req, res) {
 // return all notes in that classrooom based on classroom name
 router.get('/classroom/:className/notes', function (req, res) {
 	var name = req.params.className
-	var query1 = 'SELECT NOTES.attachment, NOTES.createdAt, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
+	var query = 'SELECT NOTES.id, NOTES.attachment, NOTES.createdAt, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
 	'INNER JOIN TAGNOTES ON TAGNOTES.note_id = NOTES.id ' +
 	'INNER JOIN TAGS ON TAGNOTES.tag_id = TAGS.id ' +
 	'INNER JOIN USERS ON NOTES.user_id = USERS.id ' + 
 	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' +
 	'WHERE CLASSROOMS.className = ? ORDER BY NOTES.createdAt DESC;'
-	db.query(query1, 
+	db.query(query, 
 		[name], 
 		function (err, rows) {
 		if(err) {
