@@ -44,7 +44,7 @@ router.post('/register', function (req, res) {
 							res.status(500).json({success: false})
 						} else {
 							var userId = result1.insertId
-							res.status(201).json({success: true, token: auth.generateToken(userId, username) })
+							res.status(201).json({success: true, token: auth.generateToken(userId, username), username: username, userId: result1[1]})
 						}
 					})
 			}
@@ -72,7 +72,7 @@ router.post('/login', function (req, res) {
 								res.status(500).json({success: false})
 							} else {
 								if(result2.length) {
-									res.json({success: true, token: auth.generateToken(result1[1], username)})
+									res.json({success: true, token: auth.generateToken(result1[1], username), username: username, userId: result1[1]})
 								} else {
 									res.json({success: false})
 								}
