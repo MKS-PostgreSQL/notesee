@@ -4,8 +4,8 @@ var dotenv = require('dotenv').config()
 var auth = {}
 
 // creates a token string
-auth.generateToken = function (userId, username) {
-	return jwt.sign({ userId: userId}, process.env.NTS_SECRET, "12h")
+auth.generateToken = function (username) {
+	return jwt.sign({ username: username}, process.env.NTS_SECRET, "12h")
 }
 
 // checks to see if token is valid
