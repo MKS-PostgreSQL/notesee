@@ -215,15 +215,20 @@ router.post('/classroom/removeuser', function (req, res) {
 						if(err) {
 							console.error(err)
 						} else {
-							db.query('DELETE FROM CLASSUSERS WHERE classroom_id = ? AND user_id = ?;',
-								[result2[0].id, result1[0].id], 
-								function (err, rows) {
-									if(err) {
-										console.error(err)
-									} else {
-										res.status(201).json({success:true})
-									}
-								})
+							console.log('RESULTS: ', result1, result2)
+							if (result1[0] === undefined || result2[0] === undefined) {
+							res.status(500).json({success:false});
+						} else {
+								db.query('DELETE FROM CLASSUSERS WHERE classroom_id = ? AND user_id = ?;',
+									[result2[0].id, result1[0].id], 
+									function (err, rows) {
+										if(err) {
+											console.error(err)
+										} else {
+											res.status(201).json({success:true})
+										}
+									})
+							}
 						}
 					})
 			}
