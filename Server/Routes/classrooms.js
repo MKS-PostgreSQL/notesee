@@ -1,6 +1,7 @@
 var express = require('express')
 var router = express.Router()
 var db = require('../db.js')
+var auth = require('../auth.js')
 
 // return ALL classrooms
 /* GET:
@@ -16,15 +17,22 @@ var db = require('../db.js')
 ]
 */
 router.get('/', function (req, res) {
-	db.query('SELECT `className`, `createdAt` FROM CLASSROOMS;', 
-		function (err, rows) {
-		if(err) {
-			console.error(err)
-			res.status(404).json({success:false})
-		} else {
-			res.json(rows)
-		}
-	})
+	var token = req.headers.token
+	var grabAllClasses = function () {
+		db.query('SELECT `className`, `createdAt` FROM CLASSROOMS;', 
+			function (err, rows) {
+			if(err) {
+				console.error(err)
+				res.status(404).json({success:false})
+			} else {
+				res.json(rows)
+			}
+		})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, grabAllClasses, error)
 })
 
 // return classroom information based on classroom name
@@ -37,17 +45,24 @@ router.get('/', function (req, res) {
 ]
 */
 router.get('/classroom/:className', function (req, res) {
+	var token = req.headers.token
 	var name = req.params.className
-	db.query('SELECT `className`, `createdAt` FROM CLASSROOMS WHERE `className` = ?;', 
-		[name], 
-		function (err, rows) {
-		if(err) {
-			console.error(err)
-			res.status(404).json({success:false})
-		} else {
-			res.json(rows)
-		}
-	})
+	var getClassInfo = function () {
+		db.query('SELECT `className`, `createdAt` FROM CLASSROOMS WHERE `className` = ?;', 
+			[name], 
+			function (err, rows) {
+			if(err) {
+				console.error(err)
+				res.status(404).json({success:false})
+			} else {
+				res.json(rows)
+			}
+		})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, getClassInfo, error)
 })
 
 // return all users in that classroom based on classroom name
@@ -68,24 +83,32 @@ router.get('/classroom/:className', function (req, res) {
 ]
 */
 router.get('/classroom/:className/users', function (req, res) {
+	var token = req.headers.token
 	var name = req.params.className
 	var query = 'SELECT USERS.username, USERS.fullName FROM USERS ' + 
 	'INNER JOIN CLASSUSERS ON USERS.id = CLASSUSERS.user_id ' + 
 	'INNER JOIN CLASSROOMS ON CLASSUSERS.classroom_id = CLASSROOMS.id ' + 
 	'WHERE CLASSROOMS.className = ?;'
-	db.query(query, [name], 
-		function (err, rows) {
-		if(err) {
-			console.error(err)
-			res.status(404).json({success:false})
-		} else {
-			res.json(rows)
-		}
-	})
+	var grabUsersInClass = function () {
+		db.query(query, [name], 
+			function (err, rows) {
+			if(err) {
+				console.error(err)
+				res.status(404).json({success:false})
+			} else {
+				res.json(rows)
+			}
+		})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, grabUsersInClass, error)
 })
 
 // return all notes in that classrooom based on classroom name
 router.get('/classroom/:className/notes', function (req, res) {
+	var token = req.headers.token
 	var name = req.params.className
 	var query = 'SELECT NOTES.id, NOTES.attachment, NOTES.createdAt, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
 	'INNER JOIN TAGNOTES ON TAGNOTES.note_id = NOTES.id ' +
@@ -93,16 +116,22 @@ router.get('/classroom/:className/notes', function (req, res) {
 	'INNER JOIN USERS ON NOTES.user_id = USERS.id ' + 
 	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' +
 	'WHERE CLASSROOMS.className = ? ORDER BY NOTES.createdAt DESC;'
-	db.query(query, 
-		[name], 
-		function (err, rows) {
-		if(err) {
-			console.error(err)
-			res.status(404).json({success:false})
-		} else {
-			res.json(rows)
-		}
-	})
+	var getAllNotesInClass = function () {
+		db.query(query, 
+			[name], 
+			function (err, rows) {
+			if(err) {
+				console.error(err)
+				res.status(404).json({success:false})
+			} else {
+				res.json(rows)
+			}
+		})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, getAllNotesInClass, error)
 })
 
 function pseudoRandomString() {
@@ -125,35 +154,42 @@ receive back:
 }
 */
 router.post('/', function (req, res) {
+	var token = req.headers.token
 	var code = pseudoRandomString()
 	var name = req.body.classroom.className
 	var user = req.body.user.username
-	db.query('INSERT INTO CLASSROOMS SET `className` = ?, `code` = ?;',
-		[name, code],
-		function (err, result1) {
-			if(err) {
-				console.error(err)
-			} else {
-				db.query('SELECT `id` FROM USERS WHERE `username` = ?;',
-					[user],
-					function (err, result2) {
-						if(err) {
-							console.error(err)
-						} else {
-							db.query('INSERT INTO CLASSUSERS SET `user_id` = ?, `classroom_id` = ?;', 
-								[result2[0].id, result1.insertId],
-								function (err, rows) {
-									if(err) {
-										console.error(err)
-										res.status(500).json({success:false})
-									} else {
-										res.status(201).json({code:code})
-									}
-								})
-						}
-					})
-			}
-		})
+	var createClass = function () {
+		db.query('INSERT INTO CLASSROOMS SET `className` = ?, `code` = ?;',
+			[name, code],
+			function (err, result1) {
+				if(err) {
+					console.error(err)
+				} else {
+					db.query('SELECT `id` FROM USERS WHERE `username` = ?;',
+						[user],
+						function (err, result2) {
+							if(err) {
+								console.error(err)
+							} else {
+								db.query('INSERT INTO CLASSUSERS SET `user_id` = ?, `classroom_id` = ?;', 
+									[result2[0].id, result1.insertId],
+									function (err, rows) {
+										if(err) {
+											console.error(err)
+											res.status(500).json({success:false})
+										} else {
+											res.status(201).json({code:code})
+										}
+									})
+							}
+						})
+				}
+			})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, createClass, error)
 })
 
 // adds user to a classroom
@@ -173,36 +209,43 @@ receive back:
 }
  */ 
 router.post('/classroom/adduser', function (req, res) {
+	var token = req.headers.token
 	var code = req.body.classroom.code
 	var classroom = req.body.classroom.className
 	var user = req.body.user.username
-	db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
-		[user], 
-		function (err, result1) {
-			if(err) {
-				console.error(err)
-			} else {
-				db.query('SELECT `id`, `code` FROM CLASSROOMS WHERE `className` = ?;', 
-					[classroom], 
-					function (err, result2) {
-						if (err) {
-							console.error(err)
-						} else {
-							if (result2[0].code === code) {
-								db.query('INSERT INTO CLASSUSERS SET user_id = ?, classroom_id = ?;', 
-									[result1[0].id, result2[0].id],
-									function (err, rows) {
-										if(err) {
-											console.error(err)
-										} else {
-											res.status(201).json({success:true})
-										}
-									})
+	var addUserToClass = function () {
+		db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
+			[user], 
+			function (err, result1) {
+				if(err) {
+					console.error(err)
+				} else {
+					db.query('SELECT `id`, `code` FROM CLASSROOMS WHERE `className` = ?;', 
+						[classroom], 
+						function (err, result2) {
+							if (err) {
+								console.error(err)
+							} else {
+								if (result2[0].code === code) {
+									db.query('INSERT INTO CLASSUSERS SET user_id = ?, classroom_id = ?;', 
+										[result1[0].id, result2[0].id],
+										function (err, rows) {
+											if(err) {
+												console.error(err)
+											} else {
+												res.status(201).json({success:true})
+											}
+										})
+								}
 							}
-						}
-					})
-			}
-		})
+						})
+				}
+			})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, addUserToClass, error)
 })
 
 // removes user from a classroom
@@ -221,38 +264,45 @@ receive back:
 }
  */
 router.post('/classroom/removeuser', function (req, res) {
+	var token = req.headers.token
 	var classroom = req.body.classroom.className
 	var user = req.body.user.username
-	db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
-		[user], 
-		function (err, result1) {
-			if(err) {
-				console.error(err)
-			} else {
-				db.query('SELECT `id` FROM CLASSROOMS WHERE `className` = ?;', 
-					[classroom], 
-					function (err, result2) {
-						if(err) {
-							console.error(err)
-						} else {
-							console.log('RESULTS: ', result1, result2)
-							if (result1[0] === undefined || result2[0] === undefined) {
-							res.status(500).json({success:false});
-						} else {
-								db.query('DELETE FROM CLASSUSERS WHERE classroom_id = ? AND user_id = ?;',
-									[result2[0].id, result1[0].id], 
-									function (err, rows) {
-										if(err) {
-											console.error(err)
-										} else {
-											res.status(201).json({success:true})
-										}
-									})
+	var removeUserFromClass = function () {
+		db.query('SELECT `id` FROM USERS WHERE `username` = ?;', 
+			[user], 
+			function (err, result1) {
+				if(err) {
+					console.error(err)
+				} else {
+					db.query('SELECT `id` FROM CLASSROOMS WHERE `className` = ?;', 
+						[classroom], 
+						function (err, result2) {
+							if(err) {
+								console.error(err)
+							} else {
+								console.log('RESULTS: ', result1, result2)
+								if (result1[0] === undefined || result2[0] === undefined) {
+								res.status(500).json({success:false});
+							} else {
+									db.query('DELETE FROM CLASSUSERS WHERE classroom_id = ? AND user_id = ?;',
+										[result2[0].id, result1[0].id], 
+										function (err, rows) {
+											if(err) {
+												console.error(err)
+											} else {
+												res.status(201).json({success:true})
+											}
+										})
+								}
 							}
-						}
-					})
-			}
-		})
+						})
+				}
+			})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, removeUserFromClass, error)
 })
 
 module.exports = router
