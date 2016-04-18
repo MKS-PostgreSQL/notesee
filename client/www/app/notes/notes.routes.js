@@ -14,11 +14,6 @@
             templateUrl: 'app/notes/notes.html',
             controller: 'NotesController as notes'
           }
-        },
-        resolve: {
-          curentAuth: function(Auth) {
-            return Auth.$requireAuth()
-          }
         }
       })
   }

@@ -5,13 +5,12 @@
     .module('notesee.settings')
     .controller('SettingsController', SettingsController)
 
-  function SettingsController (Auth, $state) {
+  function SettingsController ($state) {
     var vm = this
 
     vm.signOut = signOut
 
     function signOut () {
-      Auth.$unauth()
       $state.go('landing')
     }
   }

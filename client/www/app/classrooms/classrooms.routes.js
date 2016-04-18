@@ -14,12 +14,7 @@
             templateUrl: 'app/classrooms/classrooms.html',
             controller: 'ClassroomsController as classrooms'
           }
-        },
-        resolve: {
-    			curentAuth: function(Auth) {
-    				return Auth.$requireAuth()
-    			}
-    		}
+        }
       })
   }
 })()
