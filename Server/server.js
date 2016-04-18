@@ -14,8 +14,8 @@ var classrooms = require('./Routes/classrooms')
 var notes = require('./Routes/notes')
 
 app.use(cors())
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true, limit: '25mb', extended:true}))
+app.use(bodyParser.json({limit: '25mb', extended:true}))
 app.use(morgan('dev'));
 
 // declare path here 
