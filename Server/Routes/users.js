@@ -1,6 +1,7 @@
 var express = require('express')
 var router = express.Router()
 var db = require('../db.js')
+var auth = require('../auth.js')
 
 // retrieve information on all users registered
 /*
@@ -31,18 +32,23 @@ var db = require('../db.js')
 	]
 */
 router.get('/', function (req, res) {
-	db.query('SELECT `fullName`, `id`, `username`, `createdAt`, `email` FROM USERS;',
-		function (err, rows) {
-			if (err) {
-				console.error(err)
-				res.status(404).json({success: false})
-			} else {
-				res.json(rows)
-			}
-		})
+	var token = req.headers.token
+	var grabUsers = function () {
+		db.query('SELECT `fullName`, `id`, `username`, `createdAt`, `email` FROM USERS;',
+			function (err, rows) {
+				if (err) {
+					console.error(err)
+					res.status(404).json({success: false})
+				} else {
+					res.json(rows)
+				}
+			})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, grabUsers, error)
 })
-
-
 
 
 
@@ -64,17 +70,24 @@ router.get('/', function (req, res) {
 */
 
 router.get('/user/:name', function (req, res) {
-	var username = req.params.name
-	db.query('SELECT `fullName`, `id`, `username`, `createdAt`, `email` FROM USERS WHERE `username` = ?;',
-	 [username], 
-	 function (err, rows) {
-		if (err) {
-			console.error(err)
-			res.status(404).json({success: false})
-		} else {
-			res.json(rows)
-		}
-	})
+	var token = req.headers.token
+	var username = req.headers.username
+	var grabUserInfo = function () {
+		db.query('SELECT `fullName`, `id`, `username`, `createdAt`, `email` FROM USERS WHERE `username` = ?;',
+		 [username], 
+		 function (err, rows) {
+			if (err) {
+				console.error(err)
+				res.status(404).json({success: false})
+			} else {
+				res.json(rows)
+			}
+		})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, grabUserInfo, error)
 })
 
 // retrieve an array of classrooms a user has joined given: user id
@@ -92,17 +105,24 @@ router.get('/user/:name', function (req, res) {
 
 
 router.get('/user/:name/classrooms', function (req, res) {
-	var username = req.params.name
-	db.query('SELECT CLASSROOMS.className FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSROOMS.id = CLASSUSERS.classroom_id INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE USERS.username = ?;',
-	 [username],
-	 function (err, rows) {
-		if (err) {
-			console.error(err) 
-			res.status(404).json({success: false})
-		} else {
-			res.status(200).json(rows)
-		}
-	})
+	var username = req.headers.username
+	var token = req.headers.token
+	var grabClassrooms = function () {
+		db.query('SELECT CLASSROOMS.className FROM CLASSROOMS INNER JOIN CLASSUSERS ON CLASSROOMS.id = CLASSUSERS.classroom_id INNER JOIN USERS ON CLASSUSERS.user_id = USERS.id WHERE USERS.username = ?;',
+		 [username],
+		 function (err, rows) {
+			if (err) {
+				console.error(err) 
+				res.status(404).json({success: false})
+			} else {
+				res.status(200).json(rows)
+			}
+		})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, grabClassrooms, error)
 })
 
 // retrieve an array of saved notes for a specified user
@@ -121,7 +141,8 @@ router.get('/user/:name/classrooms', function (req, res) {
 */
 
 router.get('/user/:name/saved', function (req, res) {
-	var username = req.params.name
+	var username = req.headers.username
+	var token = req.headers.token
 	var getSavedNotes = 'SELECT CLASSROOMS.className, NOTES.attachment, NOTES.createdAt ' 
 	'FROM NOTES ' +
 	'INNER JOIN SAVEDNOTES ON NOTES.id = SAVEDNOTES.note_id ' +
@@ -129,16 +150,22 @@ router.get('/user/:name/saved', function (req, res) {
 	'INNER JOIN USERS ON SAVED.user_id = USERS.id ' +
 	'INNER JOIN CLASSROOMS ON NOTES.class_id = CLASSROOMS.id ' +
 	'WHERE USERS.username = ?;'
-	db.query(getSavedNotes,
-		[username],
-		function (err, rows) {
-			if (err) {
-				console.error(err) 
-				res.status(404).json({success: false})
-			} else {
-				res.status(200).json(rows)
-			}
-	})
+	var grabSaved = function () {
+		db.query(getSavedNotes,
+			[username],
+			function (err, rows) {
+				if (err) {
+					console.error(err) 
+					res.status(404).json({success: false})
+				} else {
+					res.status(200).json(rows)
+				}
+		})
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, grabClassrooms, error)
 })
 
 module.exports = router
