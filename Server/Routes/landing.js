@@ -69,7 +69,7 @@ router.post('/register', function (req, res) {
 })
 
 router.post('/login', function (req, res) {
-	var username = req.headers.username
+	var username = req.body.user.username
 	var password = req.body.user.password
 	var userid;
 	db.query('SELECT `username`, `id` FROM USERS WHERE `username` = ?;',
