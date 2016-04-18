@@ -25,5 +25,5 @@ query.send = function (query, array, successCb ) {
 			})
 		}
 	}
-
+	
 module.exports = query

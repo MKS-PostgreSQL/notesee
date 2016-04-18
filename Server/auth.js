@@ -6,7 +6,7 @@ var auth = {}
 // creates a token string
 auth.generateToken = function (username) {
 	return jwt.sign({ username: username}, process.env.NTS_SECRET, "12h")
-}
+  }
 
 // checks to see if token is valid
 auth.verifyToken = function (token, successCb, errorCb) {
