@@ -260,7 +260,10 @@ router.post('/classroom/adduser', function (req, res) {
 							if (err) {
 								console.error(err)
 							} else {
-								if (result2[0].code === code) {
+								if (result2.length === 0 || result2[0].code === undefined || result2[0].id === undefined) {
+									res.status(500).json({success:false})
+								}
+								else if (result2[0].code === code) {
 									db.query('INSERT INTO CLASSUSERS SET user_id = ?, classroom_id = ?;', 
 										[result1[0].id, result2[0].id],
 										function (err, rows) {
@@ -270,8 +273,6 @@ router.post('/classroom/adduser', function (req, res) {
 												res.status(201).json({success:true})
 											}
 										})
-								} else {
-									res.status(500).json({success:false})
 								}
 							}
 						})
