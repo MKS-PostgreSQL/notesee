@@ -79,6 +79,50 @@ router.post('/', function (req, res) {
   auth.verifyToken(token, postNote, error)
 });
 
+router.post('/save', function (req, res) {
+	var token = req.headers.token
+	var username req.header.username
+	var noteId = req.body.notes.noteId
+	var saveNote = function () {
+		db.query('SELECT `id` FROM USERS WHERE `username` = ?;',
+			[username],
+			function (err, rows) {
+				if (err) {
+					console.error(err)
+					res.status(500).json({success:false})
+				} else {
+					var userId = rows[0].id
+					db.query('SELECT `id` FROM SAVED WHERE `user_id` = ?;',
+						[userId],
+						function (err, result) {
+							if (err) {
+								console.error(err)
+								res.status(500).json({success:false})
+							} else {
+								var savedId = result[0].id
+								db.query('INSERT INTO SAVEDNOTES SET `note_id` = ?, `saved_id` = ?;',
+									[noteId, savedId],
+									function (err, result2) {
+										if (err) {
+											console.error(err)
+											res.status(500).json({success:false})
+										} else {
+											res.status(201).json({success: true})
+										}
+									})
+							}
+						})
+				}
+			})
+		
+	}
+	var error = function () {
+		res.status(404).json({success: false, tokenValid: false})
+	}
+	auth.verifyToken(token, saveNote, error)
+})
+
+
 function sendToS3 (img, key) {
   var s3 = new AWS.S3();
   return new Promise(function(resolve, reject) {
