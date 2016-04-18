@@ -2,14 +2,6 @@ var express = require('express')
 var router = express.Router()
 var db = require('../db.js')
 
-// users/ -> return all users and their data
-// users/:id -> return user information (name, data joined, etcetera)
-// users/:id/classrooms -> return all classrooms user is in
-// users/:id/saved -> return all saved notes user has
-
-
-
-
 // retrieve information on all users registered
 /*
 	GET /api/users/
