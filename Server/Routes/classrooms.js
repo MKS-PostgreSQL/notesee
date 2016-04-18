@@ -149,7 +149,7 @@ router.get('/classroom/:className/notes', function (req, res) {
 				classroomNotes = rows
 				for (var i = 0; i < classroomNotes.length; i++) {
 					var cnoteID = classroomNotes[i].id 
-					for (var j = 0; j < arrSaved.length; j++) {
+					for (var j = 0; j < arrSaved.length - 1; j++) {
 						if (cnoteID === arrSaved[i].note_id) {
 							classroomNotes[i].saved = true
 							break;
