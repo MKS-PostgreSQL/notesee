@@ -29,26 +29,44 @@ router.post('/register', function (req, res) {
 	var password = req.body.user.password
 	var email = req.body.user.email
 	var fullname = req.body.user.name
-	db.query('INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `fullName` = ?;',
-		[username, password, email, fullname],
-		function (err, result1) {
+
+	db.query('SELECT `username` FROM USERS WHERE `username` = ?;',
+		[username],
+		function (err, result) {
 			if (err) {
 				console.error(err)
 				res.status(500).json({success: false})
 			} else {
-				db.query('INSERT INTO SAVED SET `user_id` = ?;',
-					[result1.insertId],
-					function (err, result) {
-						if(err) {
-							console.error(err)
-							res.status(500).json({success: false})
-						} else {
-							var userId = result1.insertId
-							res.status(201).json({success: true, token: auth.generateToken(userId, username), username: username, userId: result1[1]})
-						}
-					})
+				if(!result.length) {
+					//create user
+					db.query('INSERT INTO USERS SET `username` = ?, `password` = ?, `email` = ?, `fullName` = ?;',
+						[username, password, email, fullname],
+						function (err, result1) {
+							if (err) {
+								console.error(err)
+								res.status(500).json({success: false})
+							} else {
+								db.query('INSERT INTO SAVED SET `user_id` = ?;',
+									[result1.insertId],
+									function (err, result) {
+										if(err) {
+											console.error(err)
+											res.status(500).json({success: false})
+										} else {
+											var userId = result1.insertId
+											res.status(201).json({success: true, token: auth.generateToken(userId, username), username: username, userId: result1.insertId})
+										}
+									})
+							}
+						})
+				} else {
+					// user already exists
+					res.json({success: false, userAlreadyExists: true})
+				}
 			}
 		})
+
+	
 })
 
 router.post('/login', function (req, res) {
