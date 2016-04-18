@@ -92,7 +92,7 @@ router.get('/classroom/:className/notes', function (req, res) {
 	'INNER JOIN TAGS ON TAGNOTES.tag_id = TAGS.id ' +
 	'INNER JOIN USERS ON NOTES.user_id = USERS.id ' + 
 	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' +
-	'WHERE CLASSROOMS.className = ?;'
+	'WHERE CLASSROOMS.className = ? ORDER BY NOTES.createdAt DESC;'
 	db.query(query1, 
 		[name], 
 		function (err, rows) {
