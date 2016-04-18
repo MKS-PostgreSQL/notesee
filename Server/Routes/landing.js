@@ -64,8 +64,6 @@ router.post('/register', function (req, res) {
 				}
 			}
 		})
-
-	
 })
 
 router.post('/login', function (req, res) {
@@ -101,7 +99,6 @@ router.post('/login', function (req, res) {
 		})
 })
 
-
 // Refactor in progress
 
 // router.post('/register', function (req, res) {
@@ -114,7 +111,5 @@ router.post('/login', function (req, res) {
 // 	var sendToken = res.status(201).json({success: true, token: auth.generateToken(result1.insertId, username)})
 // 	query.send(regUser, [username, password, email, fullname], query.send(createSave, [result1.insertId], sendToken))
 // })
-
-
 
 module.exports = router
