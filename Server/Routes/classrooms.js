@@ -87,13 +87,13 @@ router.get('/classroom/:className/users', function (req, res) {
 // return all notes in that classrooom based on classroom name
 router.get('/classroom/:className/notes', function (req, res) {
 	var name = req.params.className
-	var query = 'SELECT NOTES.attachment, NOTES.createdAt, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
+	var query1 = 'SELECT NOTES.attachment, NOTES.createdAt, USERS.username AS `author`, TAGS.name AS `tags` FROM NOTES ' + 
 	'INNER JOIN TAGNOTES ON TAGNOTES.note_id = NOTES.id ' +
 	'INNER JOIN TAGS ON TAGNOTES.tag_id = TAGS.id ' +
 	'INNER JOIN USERS ON NOTES.user_id = USERS.id ' + 
 	'INNER JOIN CLASSROOMS ON NOTES.classroom_id = CLASSROOMS.id ' +
 	'WHERE CLASSROOMS.className = ?;'
-	db.query(query, 
+	db.query(query1, 
 		[name], 
 		function (err, rows) {
 		if(err) {
@@ -113,25 +113,45 @@ function pseudoRandomString() {
 /* POST:
 {
     "classroom" : {
-        "className" : "GreenCorps"
+        "className": "RecycleCorps"
+    }, 
+    "user" : {
+        "username" : "sponge69"
     }
 }
 receive back:
 {
-  "code": "rwhkq"
+  "code": "xaf4a"
 }
 */
 router.post('/', function (req, res) {
 	var code = pseudoRandomString()
 	var name = req.body.classroom.className
-	db.query('INSERT INTO CLASSROOMS SET `className` = ?, `code` = ?;', 
-		[name, code], 
-		function (err, rows) {
+	var user = req.body.user.username
+	db.query('INSERT INTO CLASSROOMS SET `className` = ?, `code` = ?;',
+		[name, code],
+		function (err, result1) {
 			if(err) {
 				console.error(err)
-				res.status(500).json({success:false})
 			} else {
-				res.status(201).json({code:code})
+				db.query('SELECT `id` FROM USERS WHERE `username` = ?;',
+					[user],
+					function (err, result2) {
+						if(err) {
+							console.error(err)
+						} else {
+							db.query('INSERT INTO CLASSUSERS SET `user_id` = ?, `classroom_id` = ?;', 
+								[result2[0].id, result1.insertId],
+								function (err, rows) {
+									if(err) {
+										console.error(err)
+										res.status(500).json({success:false})
+									} else {
+										res.status(201).json({code:code})
+									}
+								})
+						}
+					})
 			}
 		})
 })
