@@ -6,7 +6,7 @@ var morgan = require('morgan')
 var db = require('./db.js')
 
 var dotenv = require('dotenv').config()
-  
+
 // your routes requires go here
 var users = require('./Routes/users')
 var landing = require('./Routes/landing')
