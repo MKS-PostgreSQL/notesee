@@ -236,6 +236,8 @@ router.post('/classroom/adduser', function (req, res) {
 												res.status(201).json({success:true})
 											}
 										})
+								} else {
+									res.status(500).json({success:false})
 								}
 							}
 						})
