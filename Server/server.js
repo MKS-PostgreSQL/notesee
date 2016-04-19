@@ -24,15 +24,7 @@ app.use('/api/landing/', landing)
 app.use('/api/classrooms/', classrooms)
 app.use('/api/classrooms/notes/', notes)
 
-
 var port = process.env.PORT || 8080
-
-
-
-
-
-
-
 
 app.listen(port, console.log('Magic happens on port', port))
 
