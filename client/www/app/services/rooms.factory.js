@@ -5,21 +5,49 @@
     .module('notesee')
     .factory('Rooms', Rooms)
 
-  function Rooms ($http) {
-    //----- Mock Data ------
-    // return [
-    //   {name: 'MKS35'},
-    //   {name: 'HR2'}
-    // ]
+  function Rooms (AWS_URL, $http) {
+    return {
+      create: function (room) {
+        return $http.post(AWS_URL + '/classrooms', {
+          classroom: {
+            className: room
+          },
+          user: {
+            username: 'merktassel'
+          }
+        })
+      },
 
-    // retrieve all classroom names for specific user
-    var classRoom = {}
-    classRoom.getClassrooms = getClassrooms
+      all: function() {
+        return $http.get(AWS_URL + '/classrooms')
+      },
 
-    function getClassrooms (userId) {
-      return $http.get('http://localhost:8080/api/users/user/' + userId + '/classrooms')
+      joined: function (user) {
+        return $http.get(AWS_URL + '/users/user/' + user + '/classrooms')
+      },
+
+      join: function (room, code, username) {
+        return $http.post(AWS_URL + '/classrooms/classroom/adduser', {
+          classroom: {
+            className: room,
+            code: code
+          },
+          user: {
+            username: username
+          }
+        })
+      },
+
+      leave: function (room, username) {
+        return $http.post(AWS_URL + '/classrooms/classroom/removeuser', {
+          classroom: {
+            className: room
+          },
+          user: {
+            username: username
+          }
+        })
+      }
     }
-
-    return classRoom
   }
 })()
