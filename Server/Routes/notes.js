@@ -95,6 +95,8 @@ router.post('/', function (req, res) {
   auth.verifyToken(token, postNote, error)
 });
 
+// On requisiton of a token, username, and noteId, the selected note is 
+// inserted into the SAVEDNOTES join table
 router.post('/save', function (req, res) {
 	var token = req.headers.token
 	var username = req.headers.username
@@ -138,7 +140,7 @@ router.post('/save', function (req, res) {
 	auth.verifyToken(token, saveNote, error)
 })
 
-
+// creates a new bucket and uploads the base64 image data to that bucket
 function sendToS3 (img, key) {
   var s3 = new AWS.S3();
   return new Promise(function(resolve, reject) {
