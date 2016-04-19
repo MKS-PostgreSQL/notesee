@@ -6,10 +6,10 @@ var credentials = require('../credentials.js')
 var auth = require('../auth.js')
 
 function pseudoRandomString() {
-    return Math.round((Math.pow(36, 6) - Math.random() * Math.pow(36, 5))).toString(36).slice(1);
+    return Math.round((Math.pow(36, 6) - Math.random() * Math.pow(36, 5))).toString(36).slice(1)
 }
 
-AWS.config.update({accessKeyId: credentials.accessKeyId, secretAccessKey: credentials.secretAccessKey, region: 'us-west-1'});
+AWS.config.update({accessKeyId: credentials.accessKeyId, secretAccessKey: credentials.secretAccessKey, region: 'us-west-1'})
 
 //Return all notes
 /*
@@ -93,7 +93,7 @@ router.post('/', function (req, res) {
   	res.status(404).json({success: false, tokenValid: false})
   }
   auth.verifyToken(token, postNote, error)
-});
+})
 
 // On requisiton of a token, username, and noteId, the selected note is 
 // inserted into the SAVEDNOTES join table
@@ -142,23 +142,21 @@ router.post('/save', function (req, res) {
 
 // creates a new bucket and uploads the base64 image data to that bucket
 function sendToS3 (img, key) {
-  var s3 = new AWS.S3();
+  var s3 = new AWS.S3()
   return new Promise(function(resolve, reject) {
     s3.createBucket({Bucket: 'notesee.bucket'}, function() {
       var buffer = new Buffer(img.replace(/'data:image\/\w+base64,/, ""),'base64')
-      var params = {Bucket: 'notesee.bucket', ContentEncoding: 'base64', ContentType:'image/jpg', ACL: 'public-read', Key: key, Body: buffer};
+      var params = {Bucket: 'notesee.bucket', ContentEncoding: 'base64', ContentType:'image/jpg', ACL: 'public-read', Key: key, Body: buffer}
       s3.upload(params, function(err, data) {
       if (err) {  
-          console.log('Error: ', err);
           reject(err);   
       } else {    
-      	  console.log('Data: ', data);
           resolve(data.Location);
       }
     })
    });
   }).catch(function(err) {
-    console.log('Error');
+    console.log('Error')
   })
 };
 
