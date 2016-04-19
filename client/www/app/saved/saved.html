@@ -3,6 +3,24 @@
 
   <!-- Content Wrapper -->
   <ion-content>
-    <h1>Saved Notes Go Here</h1>
+
+    <!-- Meta Information -->
+    <div ng-repeat="note in saved.notes | filter: saved.query" class="list card">
+      <div class="item item-avatar">
+        <img ng-src="">
+        <h2>{{note.author}}</h2>
+        <p>{{note.createdAt | date: 'short'}}</p>
+      </div>
+
+      <!-- Scanned Document -->
+      <div class="item item-image">
+        <img ng-src="{{note.attachment}}">
+      </div>
+
+      <!-- Tags -->
+      <p class="item">
+        <a href ng-repeat="tag in note.tags" ng-click="saved.query.tags = tag" class="subdued">{{tag}}</a>
+      </p>
+    </div>
   </ion-content>
 </ion-view>
