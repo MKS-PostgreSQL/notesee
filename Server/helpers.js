@@ -24,9 +24,6 @@ query.send = function (query, array, successCb ) {
 			}
 		})
 	}
-<<<<<<< HEAD
 }
-=======
->>>>>>> parent of 9bf6069... [clean up] Fixed indentation
 
 module.exports = query
