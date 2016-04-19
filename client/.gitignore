@@ -1,0 +1,12 @@
+# Default
+node_modules/
+platforms/
+plugins/
+
+# Bower Dependencies
+lib/
+
+# Ionic Resources (Except Icon & Splash)
+resources/
+!resources/icon.*
+!resources/splash.*

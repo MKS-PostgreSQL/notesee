@@ -1,0 +1,43 @@
+<!-- View Wrapper -->
+<ion-view title="{{notes.classroom}}">
+
+  <!-- Header Buttons -->
+  <ion-nav-buttons side="right">
+
+    <!-- New Note Button -->
+    <button ng-if="!notes.query" ng-click="notes.create()" class="button button-icon ion-plus"></button>
+
+    <!-- Clear Filter Button -->
+    <button ng-if="notes.query" ng-click="notes.query = null" class="button button-icon ion-close"></button>
+  </ion-nav-buttons>
+
+  <!-- Content Wrapper -->
+  <ion-content>
+
+    <!-- No Notes Button -->
+    <div ng-if="notes.notes.length === 0" class="padding">
+      <button ng-click="notes.create()" class="button button-block button-stable">No Notes, Create One?</button>
+    </div>
+
+    <!-- Meta Information -->
+    <div ng-repeat="note in notes.notes | filter: notes.query" class="list card">
+      <div class="item item-avatar">
+        <img ng-if="note.saved" ng-click="notes.unsave(note.id); note.saved = false" ng-src="img/saved.png">
+        <img ng-if="!note.saved" ng-click="notes.save(note.id); note.saved = true" ng-src="img/unsaved.png">
+        <h2>{{note.author}}</h2>
+        <p>{{note.createdAt | date: 'short'}}</p>
+      </div>
+
+      <!-- Scanned Document -->
+      <div class="item item-image">
+        <img ng-src="{{note.attachment}}">
+      </div>
+
+      <!-- Tags -->
+      <p class="item">
+        <a href ng-repeat="tag in note.tags" ng-click="notes.query.tags = tag" class="subdued">{{tag}}</a>
+      </p>
+    </div>
+
+  </ion-content>
+</ion-view>
