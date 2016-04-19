@@ -3,8 +3,12 @@
 
   <!-- Header Bar -->
   <ion-header-bar class="bar-assertive">
+
+    <!-- Title -->
     <h1 class="title">New Note</h1>
-    <button class="button button-clear button-primary" ng-click="notes.modal.remove(); notes.newPhoto = notes.originalPhoto">Cancel</button>
+
+    <!-- Cancel Button -->
+    <button class="button button-clear button-primary" ng-click="notes.modal.remove(); notes.newPhoto = null">Cancel</button>
   </ion-header-bar>
 
   <!-- Content Wrapper -->
@@ -14,7 +18,7 @@
     <div class="list card">
       <div class="item item-avatar">
         <img ng-src="">
-        <h2>merktassel</h2>
+        <h2>{{notes.author}}</h2>
         <p>now</p>
       </div>
 
@@ -25,7 +29,7 @@
 
       <!-- Tags -->
       <p class="item">
-        <input type="text" placeholder="tag1, tag2, tag3">
+        <input ng-model="notes.tags" type="text" placeholder="tag1 tag2 tag3">
       </p>
     </div>
 
@@ -37,7 +41,7 @@
 
     <!-- Save Button -->
     <div class="padding">
-      <button class="button button-block button-assertive" ng-click="notes.save()">Save</button>
+      <button class="button button-block button-assertive" ng-click="notes.upload()">Save</button>
     </div>
   </ion-content>
 </ion-modal-view>

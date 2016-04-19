@@ -8,7 +8,7 @@
   function config ($stateProvider) {
     $stateProvider
       .state('tab.notes', {
-        url: '/notes',
+        url: '/notes/:classroom',
         views: {
           'tab-classrooms': {
             templateUrl: 'app/notes/notes.html',
