@@ -5,36 +5,58 @@
     .module('notesee.classrooms')
     .controller('ClassroomsController', ClassroomsController)
 
-  function ClassroomsController ($cordovaSocialSharing, $ionicModal, $scope, $state, Rooms) {
+  function ClassroomsController (Auth, Rooms, $cordovaSocialSharing, $ionicModal, $state) {
+    // Initialization
     var vm = this
-    var userId = $state.params.user
+    activate()
 
-    vm.start = start
+    // Variables
+    vm.joining
+    vm.username = Auth.current().username
+    vm.rooms = []
+
+    // Functions
     vm.create = create
+    vm.join = join
     vm.leave = leave
-    vm.view = view
+    vm.share = share
 
-    function start () {
-      Rooms.getClassrooms(userId).then(function (response) {
-        vm.rooms = response.data;
-      }, function (err) {
-        console.log(err);
+    // Implementation Details
+    function activate () {
+      Rooms.joined(vm.username).success(function (data) {
+        vm.rooms = data
       })
     }
 
     function create () {
       var roomName = window.prompt('What would you like to name your classroom?')
 
+      Rooms.create(roomName).success(function (data) {
+        $cordovaSocialSharing
+          .share(vm.username + ' has invited you to join the ' + roomName + ' classroom! Enter ' + data.code + ' in the app to collaborate on notes.', roomName + ' Classroom Invitation', null, 'http://notesee.com')
+
+        activate()
+      })
+    }
+
+    function join () {
+      var code = window.prompt('Enter Classroom Code')
+
+      Rooms.join(vm.joining, code, vm.username).success(function (data) {
+        vm.joining = null
+        activate()
+      })
+    }
+
+    function leave (classroom) {
+      Rooms.leave(classroom, vm.username).success(function (data) {
+        activate()
+      })
+    }
+
+    function share (classroom) {
       $cordovaSocialSharing
-        .share('Mark has invited you to join the ' + roomName + ' classroom! Enter 1234 in the app to collaborate on notes.', roomName + ' Classroom Invitation', null, 'http://example.com')
-    }
-
-    function leave () {
-      console.log('should leave the room')
-    }
-
-    function view () {
-      $state.go('tab.notes')
+        .share(vm.username + ' has invited you to join the ' + classroom.className + ' classroom! Enter ' + classroom.code + ' in the app to collaborate on notes.', classroom.className + ' Classroom Invitation', null, 'http://notesee.com')
     }
   }
 })()

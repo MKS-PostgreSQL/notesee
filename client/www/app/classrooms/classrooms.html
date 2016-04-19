@@ -7,11 +7,38 @@
   </ion-nav-buttons>
 
   <!-- Content Wrapper -->
-  <ion-content ng-init=classrooms.start()>
+  <ion-content>
+
+    <!-- Search Bar -->
+    <ion-header-bar class="bar item-input-inset">
+
+      <!-- Input Field -->
+      <label class="item-input-wrapper">
+        <i class="icon ion-person-add placeholder-icon"></i>
+        <input ng-model="classrooms.joining" type="text" placeholder="enter classroom name to join">
+      </label>
+
+      <!-- Join Button -->
+      <button ng-click="classrooms.join()" class="button button-clear">Join</button>
+    </ion-header-bar>
+
+    <!-- No Classrooms Button -->
+    <div ng-if="classrooms.rooms.length === 0" class="padding">
+      <button ng-click="classrooms.create()" class="button button-block button-stable">No Classrooms, Create One?</button>
+    </div>
+
+    <!-- Classroom List -->
     <ion-list>
-      <ion-item ng-repeat="room in classrooms.rooms" ng-click="classrooms.view()">
-        {{room.name}}
-        <ion-option-button ng-click="classrooms.leave()" class="button-assertive">Leave</ion-option-button>
+
+      <!-- Class Name & Code -->
+      <ion-item ng-repeat="room in classrooms.rooms" ui-sref="tab.notes({classroom: room.className})">
+        {{room.className}} ({{room.code}})
+
+        <!-- Share Button -->
+        <ion-option-button ng-click="classrooms.share(room)" class="button-positive">Share</ion-option-button>
+
+        <!-- Leave Button -->
+        <ion-option-button ng-click="classrooms.leave(room.className)" class="button-assertive">Leave</ion-option-button>
       </ion-item>
     </ion-list>
   </ion-content>
