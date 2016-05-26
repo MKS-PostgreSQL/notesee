@@ -10,10 +10,12 @@
     var vm = this
 
     // Variables
-    vm.account.username
-    vm.account.password
-    vm.account.email
-    vm.account.name
+    vm.account = {
+      name: '',
+      email: '',
+      username: '',
+      password: ''
+    }
 
     // Functions
     vm.signIn = signIn
